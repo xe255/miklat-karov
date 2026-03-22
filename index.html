@@ -37,46 +37,71 @@
   <link rel="apple-touch-icon" href="icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <style>
     :root {
-      --bg-primary: #f8f9fa;
-      --bg-card: #ffffff;
-      --bg-card-hover: #f0f1f3;
-      --accent: #d63031;
-      --accent-glow: rgba(214, 48, 49, 0.25);
-      --accent-secondary: #2d3436;
-      --text-primary: #1a1a2e;
-      --text-secondary: #4a5568;
-      --text-muted: #a0aec0;
-      --success: #00b894;
-      --warning: #e17055;
-      --border: rgba(0, 0, 0, 0.08);
-      --radius: 20px;
-      --radius-sm: 14px;
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-hover: #f1f5f9;
+      --accent: #ef4444;
+      --accent-hover: #dc2626;
+      --accent-glow: rgba(239, 68, 68, 0.3);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --waze: #33ccff;
+      --waze-text: #007799;
+      --waze-bg: rgba(51, 204, 255, 0.1);
+      --gmaps: #34a853;
+      --gmaps-text: #1e7033;
+      --gmaps-bg: rgba(52, 168, 83, 0.1);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 8px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 16px 32px rgba(0,0,0,0.1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-base: #020617;
+        --bg-surface: #0f172a;
+        --bg-surface-hover: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #1e293b;
+        --waze-text: #33ccff;
+        --gmaps-text: #4ade80;
+        --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+        --shadow-md: 0 8px 16px rgba(0,0,0,0.4);
+        --shadow-lg: 0 16px 32px rgba(0,0,0,0.5);
+      }
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: 'Heebo', sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
+      font-family: 'Heebo', system-ui, -apple-system, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-main);
       min-height: 100dvh;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
     }
 
     .bg-pattern {
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(214, 48, 49, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(45, 52, 54, 0.03) 0%, transparent 50%);
+      background: 
+        radial-gradient(circle at 15% 50%, rgba(239, 68, 68, 0.04) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.04) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
     }
@@ -84,7 +109,7 @@
     .container {
       position: relative;
       z-index: 1;
-      max-width: 480px;
+      max-width: 540px;
       margin: 0 auto;
       padding: 0 16px;
       display: flex;
@@ -93,80 +118,109 @@
 
     header {
       text-align: center;
-      padding: 24px 0 16px;
+      padding: 40px 0 24px;
     }
 
     .shield-icon {
-      font-size: 52px;
-      display: block;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 0 20px var(--accent-glow));
-      animation: pulse-glow 2s ease-in-out infinite;
+      font-size: 56px;
+      display: inline-block;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 24px var(--accent-glow));
+      animation: float 3s ease-in-out infinite;
     }
 
-    @keyframes pulse-glow {
-      0%, 100% { filter: drop-shadow(0 0 15px var(--accent-glow)); }
-      50% { filter: drop-shadow(0 0 30px var(--accent-glow)); }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
     h1 {
-      font-size: 30px;
+      font-size: 36px;
       font-weight: 900;
-      letter-spacing: -0.5px;
-      color: var(--text-primary);
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.1;
     }
 
     .subtitle {
-      color: var(--text-secondary);
-      font-size: 15px;
-      font-weight: 400;
-      margin-top: 4px;
+      color: var(--text-muted);
+      font-size: 16px;
+      font-weight: 500;
     }
 
     .status-bar {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       padding: 10px 20px;
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 50px;
-      margin: 12px 0 20px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-radius: 99px;
+      margin: 0 auto 32px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: var(--warning);
-      animation: blink 1.5s ease-in-out infinite;
+      animation: pulse 2s infinite;
     }
 
     .status-dot.active { background: var(--success); animation: none; }
     .status-dot.error { background: var(--accent); animation: none; }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+
+    .info-banner {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .info-banner__inner {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-main);
+      line-height: 1.6;
+      max-width: 36em;
+      margin-inline: auto;
+    }
+
+    .info-banner__inner strong {
+      color: var(--accent);
+      font-weight: 800;
     }
 
     .main-btn {
       width: 100%;
-      padding: 18px 24px;
+      margin-bottom: 12px;
+      padding: 20px 24px;
       border: none;
-      border-radius: 24px;
-      font-family: 'Heebo', sans-serif;
+      border-radius: var(--radius-lg);
+      font-family: inherit;
       font-size: 18px;
       font-weight: 800;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
     }
 
     .btn-locate {
@@ -175,100 +229,175 @@
       box-shadow: 0 8px 24px var(--accent-glow);
     }
 
-    .btn-locate:not(:disabled) {
-      animation: pulse-button 2s infinite;
-    }
-
-    @keyframes pulse-button {
-      0% { box-shadow: 0 0 0 0 rgba(214, 48, 49, 0.4); }
-      70% { box-shadow: 0 0 0 16px rgba(214, 48, 49, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(214, 48, 49, 0); }
-    }
-
-    .btn-locate:hover {
+    .btn-locate:not(:disabled):hover {
+      background: var(--accent-hover);
       transform: translateY(-2px);
-      box-shadow: 0 12px 28px var(--accent-glow);
+      box-shadow: 0 12px 32px var(--accent-glow);
     }
 
-    .btn-locate:active { transform: translateY(0); }
+    .btn-locate:not(:disabled):active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
 
     .btn-locate:disabled {
       opacity: 0.7;
       cursor: not-allowed;
-      transform: none;
-      animation: none;
     }
 
-    .btn-locate .spinner {
-      display: inline-block;
+    .spinner {
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255,255,255,0.4);
+      border: 3px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-left: 8px;
+    }
+
+    .spinner-sm {
+      width: 16px;
+      height: 16px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      opacity: 0.7;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ===== MAP ===== */
-    .map-section {
-      margin-top: 16px;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      position: relative;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-      background: var(--bg-card);
+    .map-container {
+      margin-top: 24px;
     }
 
-    @media (max-width: 480px) {
-      .map-section {
-        margin-left: -16px;
-        margin-right: -16px;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-      }
-    }
-
-    .map-section-header {
+    .map-header {
       display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin: 0 0 16px;
       padding: 0 4px;
     }
 
-    .map-section-title {
-      font-size: 18px;
+    .map-title {
+      font-size: 19px;
       font-weight: 800;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 12rem;
+      min-width: 0;
+      line-height: 1.3;
+    }
+
+    .map-header .map-toggle-btn {
+      flex: 0 0 auto;
     }
 
     .map-toggle-btn {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      color: var(--text-secondary);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-family: 'Heebo', sans-serif;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 99px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
     }
 
     .map-toggle-btn:hover {
-      background: var(--bg-card-hover);
-      color: var(--text-primary);
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    .map-locate-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
+      width: 100%;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .map-locate-top:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--text-muted);
+    }
+
+    .map-locate-top:active {
+      transform: scale(0.99);
+    }
+
+    .map-locate-top svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      fill: currentColor;
+      opacity: 0.85;
+    }
+
+    .map-section {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      background: var(--bg-surface);
     }
 
     #map {
       width: 100%;
-      height: 320px;
+      height: 350px;
       z-index: 1;
+      transition: height 0.3s ease;
+    }
+
+    .map-locate-btn {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      z-index: 1000;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 99px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s;
+    }
+
+    .map-locate-btn:hover {
+      transform: scale(1.02);
+    }
+
+    .map-locate-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
 
     .map-hint {
@@ -279,228 +408,91 @@
       font-weight: 500;
     }
 
-    /* Leaflet popup overrides */
-    .leaflet-popup-content-wrapper {
-      background: #fff !important;
-      color: var(--text-primary) !important;
-      border-radius: 16px !important;
-      border: 1px solid var(--border) !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
-      font-family: 'Heebo', sans-serif !important;
-      direction: rtl;
+    .map-nearest-nav {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--accent);
+      background: rgba(239, 68, 68, 0.06);
+      box-shadow: var(--shadow-sm);
     }
 
-    .leaflet-popup-content {
-      margin: 16px !important;
-      font-size: 14px !important;
-      line-height: 1.5 !important;
-      min-width: 200px !important;
+    .map-nearest-nav[hidden] {
+      display: none !important;
     }
 
-    .leaflet-popup-tip {
-      background: #fff !important;
-      border: 1px solid var(--border) !important;
-      box-shadow: none !important;
+    .map-nearest-nav-head {
+      text-align: center;
+      margin-bottom: 12px;
     }
 
-    .leaflet-popup-close-button {
-      color: var(--text-muted) !important;
-      font-size: 24px !important;
-      padding: 4px !important;
-    }
-
-    .popup-title {
+    .map-nearest-nav-title {
+      font-size: 17px;
       font-weight: 800;
-      font-size: 16px;
+      color: var(--text-main);
       margin-bottom: 4px;
-      color: var(--accent);
     }
 
-    .popup-distance {
+    .map-nearest-nav-dist {
       font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
     }
 
-    .popup-nav {
-      display: flex;
-      gap: 8px;
-    }
-
-    .popup-nav a {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-family: 'Heebo', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      transition: opacity 0.2s;
-    }
-
-    .popup-nav a:active { opacity: 0.7; }
-
-    .popup-nav .popup-waze {
-      background: #33ccff;
-      color: #000;
-    }
-
-    .popup-nav .popup-gmaps {
-      background: #34a853;
-      color: #fff;
-    }
-
-    .popup-nav a svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Custom cluster styling */
-    .marker-cluster-small {
-      background-color: rgba(233, 69, 96, 0.25) !important;
-    }
-    .marker-cluster-small div {
-      background-color: rgba(233, 69, 96, 0.7) !important;
-      color: #fff !important;
-      font-family: 'Heebo', sans-serif !important;
-      font-weight: 700 !important;
-    }
-    .marker-cluster-medium {
-      background-color: rgba(233, 69, 96, 0.35) !important;
-    }
-    .marker-cluster-medium div {
-      background-color: rgba(233, 69, 96, 0.8) !important;
-      color: #fff !important;
-      font-family: 'Heebo', sans-serif !important;
-      font-weight: 700 !important;
-    }
-    .marker-cluster-large {
-      background-color: rgba(200, 40, 60, 0.4) !important;
-    }
-    .marker-cluster-large div {
-      background-color: rgba(200, 40, 60, 0.85) !important;
-      color: #fff !important;
-      font-family: 'Heebo', sans-serif !important;
-      font-weight: 700 !important;
-    }
-
-    /* Locate-me button on map (floating) */
-    .map-locate-btn {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      z-index: 1000;
-      height: 48px;
-      padding: 0 20px;
-      border-radius: 24px;
-      background: #4285f4;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 20px rgba(66, 133, 244, 0.5);
-      transition: all 0.2s;
-      font-family: 'Heebo', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .map-locate-btn:active {
-      transform: scale(0.95);
-    }
-
-    .map-locate-btn svg { width: 22px; height: 22px; fill: white; flex-shrink: 0; }
-
-    .map-locate-btn .spinner-sm {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    /* Top locate button above map */
-    .map-locate-top {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 20px;
-      border: 2px solid rgba(66, 133, 244, 0.3);
-      border-radius: var(--radius-sm);
-      background: rgba(66, 133, 244, 0.05);
-      color: #4285f4;
-      font-family: 'Heebo', sans-serif;
-      font-size: 15px;
+    .map-nearest-nav-dist strong {
+      color: var(--accent);
       font-weight: 800;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-      margin-bottom: 12px;
     }
 
-    .map-locate-top:active {
-      background: rgba(66, 133, 244, 0.15);
-      transform: scale(0.98);
+    .map-nearest-nav .nav-buttons {
+      margin-top: 0;
     }
 
-    .map-locate-top svg { width: 20px; height: 20px; fill: #4285f4; flex-shrink: 0; }
-
-    .map-locate-top .spinner-sm {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(66, 133, 244, 0.3);
-      border-top-color: #4285f4;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .map-nearest-nav .nav-btn {
+      padding: 12px 8px;
+      font-size: 14px;
     }
 
-    /* ===== RESULTS ===== */
+    /* Results */
     .results {
-      margin-top: 24px;
-      flex: 1;
-      padding-bottom: 30px;
+      margin-top: 40px;
+      padding-bottom: 40px;
     }
 
     .results-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      align-items: center;
+      margin-bottom: 20px;
       padding: 0 4px;
     }
 
-    .results-title { font-size: 18px; font-weight: 800; }
+    .results-title {
+      font-size: 22px;
+      font-weight: 800;
+    }
 
     .results-count {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      background: var(--bg-card);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
       padding: 6px 14px;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
     }
 
     .shelter-card {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
+      border-radius: var(--radius-lg);
+      padding: 24px;
       margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
       transition: all 0.3s ease;
-      animation: slideUp 0.4s ease-out backwards;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      position: relative;
+      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
 
     .shelter-card:nth-child(2) { animation-delay: 0.05s; }
@@ -509,36 +501,34 @@
     .shelter-card:nth-child(5) { animation-delay: 0.2s; }
     .shelter-card:nth-child(6) { animation-delay: 0.25s; }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .shelter-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     .shelter-card.nearest {
       border: 2px solid var(--accent);
-      box-shadow: 0 8px 24px var(--accent-glow);
-      position: relative;
+      box-shadow: var(--shadow-md);
     }
 
     .nearest-badge {
       position: absolute;
       top: -12px;
-      right: 20px;
+      right: 24px;
       background: var(--accent);
       color: white;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 4px 14px;
-      border-radius: 20px;
-      letter-spacing: 0.5px;
+      padding: 4px 16px;
+      border-radius: 99px;
       box-shadow: 0 4px 12px var(--accent-glow);
     }
 
     .shelter-top {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
     }
 
     .shelter-distance {
@@ -548,40 +538,61 @@
     }
 
     .distance-value {
-      font-size: 42px;
+      font-size: 48px;
       font-weight: 900;
       line-height: 1;
+      color: var(--text-main);
+      letter-spacing: -0.03em;
+    }
+
+    .shelter-card.nearest .distance-value {
       color: var(--accent);
-      letter-spacing: -1px;
     }
 
     .distance-unit {
-      font-size: 16px;
-      color: var(--text-secondary);
+      font-size: 18px;
       font-weight: 700;
+      color: var(--text-muted);
     }
 
     .shelter-index {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: var(--bg-primary);
+      background: var(--bg-base);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
       font-weight: 800;
-      color: var(--text-secondary);
+      font-size: 15px;
       border: 1px solid var(--border);
     }
+
+    .walking-time {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 16px;
+      background: var(--bg-base);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      width: fit-content;
+    }
+
+    .walking-time svg { width: 18px; height: 18px; opacity: 0.7; }
 
     .shelter-coords {
       font-size: 13px;
       color: var(--text-muted);
-      font-family: 'Courier New', monospace;
-      margin-bottom: 16px;
+      font-family: ui-monospace, monospace;
+      margin-bottom: 20px;
       direction: ltr;
       text-align: left;
+      opacity: 0.7;
     }
 
     .nav-buttons {
@@ -596,146 +607,89 @@
       justify-content: center;
       gap: 8px;
       padding: 14px 8px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 15px;
       text-decoration: none;
-      font-family: 'Heebo', sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
+      border: 1px solid transparent;
     }
 
-    .nav-btn:active {
-      transform: scale(0.96);
+    .nav-btn:active { transform: scale(0.96); }
+
+    /* class names are nav-waze / nav-gmaps (not .waze / .gmaps) — קישורי דפדפן ברירת מחדל בוטלו */
+    .nav-btn.nav-waze,
+    .nav-btn.nav-waze:visited {
+      background: var(--waze-bg);
+      color: var(--waze-text);
+      border-color: rgba(51, 204, 255, 0.35);
     }
 
-    .nav-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
-
-    .nav-btn.waze { border-color: rgba(51, 204, 255, 0.4); color: #0088cc; background: rgba(51, 204, 255, 0.05); }
-    .nav-btn.waze:active { background: rgba(51, 204, 255, 0.15); }
-    
-    .nav-btn.gmaps { border-color: rgba(52, 168, 83, 0.4); color: #2e8b46; background: rgba(52, 168, 83, 0.05); }
-    .nav-btn.gmaps:active { background: rgba(52, 168, 83, 0.15); }
-
-    .error-msg {
-      background: #fff5f5;
-      border: 1px solid rgba(214, 48, 49, 0.2);
-      border-radius: var(--radius);
-      padding: 16px 20px;
-      margin-top: 16px;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--accent);
-      text-align: center;
-      line-height: 1.6;
+    .nav-btn.nav-waze:hover {
+      background: rgba(51, 204, 255, 0.22);
+      color: var(--waze-text);
     }
 
-    footer {
-      text-align: center;
-      padding: 20px 0 40px;
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.8;
+    .nav-btn.nav-gmaps,
+    .nav-btn.nav-gmaps:visited {
+      background: var(--gmaps-bg);
+      color: var(--gmaps-text);
+      border-color: rgba(52, 168, 83, 0.35);
     }
 
-    footer a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
-
-    .walking-time {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .nav-btn.nav-gmaps:hover {
+      background: rgba(52, 168, 83, 0.22);
+      color: var(--gmaps-text);
     }
 
-    .walking-time svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-muted); }
-
-    .info-banner {
-      background: #fff5f5;
-      border: 1px solid rgba(214, 48, 49, 0.15);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      margin-bottom: 24px;
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(214, 48, 49, 0.05);
+    .nav-btn.nav-apple,
+    .nav-btn.nav-apple:visited {
+      background: rgba(0, 122, 255, 0.1);
+      color: #0071e3;
+      border-color: rgba(0, 122, 255, 0.28);
+    }
+    .nav-btn.nav-apple:hover {
+      background: rgba(0, 122, 255, 0.18);
+      color: #0071e3;
     }
 
-    .info-banner strong { color: var(--accent); font-weight: 800; }
-
-    /* Skip to content - accessibility */
-    .skip-link {
-      position: absolute;
-      top: -100px;
-      left: 0;
-      right: 0;
-      background: var(--accent);
-      color: white;
-      text-align: center;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 800;
-      z-index: 10000;
-      transition: top 0.2s;
+    .nav-buttons--with-apple {
+      grid-template-columns: 1fr 1fr;
+    }
+    .nav-buttons--with-apple .nav-apple {
+      grid-column: 1 / -1;
     }
 
-    .skip-link:focus {
-      top: 0;
+    .nav-btn .brand-nav-icon {
+      width: 26px;
+      height: 26px;
     }
 
-    /* Focus visible for keyboard users */
-    *:focus-visible {
-      outline: 3px solid #4285f4;
-      outline-offset: 2px;
-      border-radius: 8px;
-    }
-
-    /* Screen reader only utility */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Legal pages in-page sections */
-    .legal-section {
-      margin-top: 8px;
-    }
+    /* Footer & Legal */
+    .legal-section { margin-top: 12px; }
 
     .legal-toggle {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-secondary);
-      font-family: 'Heebo', sans-serif;
-      font-size: 14px;
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      padding: 14px 16px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
       transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
     }
 
-    .legal-toggle:active { transform: scale(0.98); }
+    .legal-toggle:hover { background: var(--bg-surface-hover); }
 
     .legal-toggle .arrow {
-      display: inline-block;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.3s ease;
       font-size: 12px;
       color: var(--text-muted);
     }
@@ -744,38 +698,48 @@
 
     .legal-panel {
       display: none;
-      background: var(--bg-primary);
-      padding: 16px 8px;
-      font-size: 13px;
-      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      padding: 20px;
+      font-size: 14px;
+      color: var(--text-muted);
       line-height: 1.8;
-      text-align: right;
-      animation: fadeIn 0.3s ease;
+      margin-top: -8px;
+      padding-top: 24px;
     }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .legal-panel.open { display: block; }
+    .legal-panel.open { display: block; animation: fadeIn 0.3s ease; }
 
     .legal-panel h3 {
-      font-size: 15px;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-      margin-top: 16px;
+      font-size: 16px;
+      color: var(--text-main);
+      margin: 20px 0 8px;
       font-weight: 800;
     }
 
     .legal-panel h3:first-child { margin-top: 0; }
     .legal-panel p { margin-bottom: 12px; }
-    .legal-panel ul { padding-right: 20px; margin-bottom: 12px; }
-    .legal-panel li { margin-bottom: 6px; }
+    .legal-panel ul { padding-right: 24px; margin-bottom: 12px; }
+    .legal-panel li { margin-bottom: 8px; }
     .legal-panel a { color: var(--accent); font-weight: 700; }
+
+    footer {
+      text-align: center;
+      padding: 40px 0 60px;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    footer a { color: var(--text-main); text-decoration: none; font-weight: 600; }
 
     .footer-links {
       display: flex;
       justify-content: center;
-      gap: 16px;
-      margin-top: 12px;
+      gap: 20px;
+      margin-top: 20px;
       flex-wrap: wrap;
     }
 
@@ -783,215 +747,250 @@
       background: none;
       border: none;
       color: var(--text-muted);
-      font-family: 'Heebo', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      padding: 4px;
       text-decoration: underline;
     }
 
-    /* ===== INSTALL BANNER ===== */
-    .install-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 9999;
-      background: rgba(26, 26, 46, 0.95);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: #fff;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      transform: translateY(-100%);
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .install-banner.visible {
-      transform: translateY(0);
-    }
-
-    .install-banner-icon {
-      font-size: 32px;
-      flex-shrink: 0;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
-    }
-
-    .install-banner-text {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .install-banner-title {
-      font-weight: 800;
+    .error-msg {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-top: 16px;
       font-size: 15px;
-      margin-bottom: 2px;
+      font-weight: 600;
+      color: var(--accent);
+      text-align: center;
+      line-height: 1.6;
     }
 
-    .install-banner-sub {
-      font-size: 13px;
-      opacity: 0.8;
-      font-weight: 400;
+    /* Leaflet Overrides — Rubik reads very clearly for Hebrew in small UI */
+    .leaflet-popup-content-wrapper {
+      background: var(--bg-surface) !important;
+      color: var(--text-main) !important;
+      border-radius: var(--radius-md) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: var(--shadow-lg) !important;
+      font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
+      direction: rtl;
     }
-
-    .install-banner-btn {
-      flex-shrink: 0;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 20px;
-      font-family: 'Heebo', sans-serif;
-      font-size: 14px;
+    .leaflet-popup-content {
+      font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
+      font-size: 15px !important;
+      line-height: 1.55 !important;
+      font-weight: 500 !important;
+      -webkit-font-smoothing: antialiased;
+    }
+    .leaflet-popup-tip {
+      background: var(--bg-surface) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: none !important;
+    }
+    .leaflet-popup-close-button {
+      color: var(--text-muted) !important;
+      font-size: 24px !important;
+      padding: 4px !important;
+    }
+    .popup-title {
+      font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
       font-weight: 800;
-      cursor: pointer;
-      white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(214, 48, 49, 0.3);
+      font-size: 17px;
+      margin-bottom: 8px;
+      color: var(--accent);
+      letter-spacing: -0.02em;
     }
-
-    .install-banner-btn:active {
-      transform: scale(0.95);
+    .popup-distance {
+      font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 600;
     }
-
-    .install-banner-close {
-      flex-shrink: 0;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: #fff;
-      font-size: 20px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
+    .popup-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .popup-nav a {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
+      font-size: 15px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .popup-nav a:visited {
+      text-decoration: none;
+    }
+    .popup-nav a:active {
+      transform: scale(0.98);
+    }
+    .popup-nav .popup-waze,
+    .popup-nav .popup-waze:visited {
+      background: #e6f9ff;
+      color: #006680;
+      border-color: rgba(51, 204, 255, 0.45);
+    }
+    .popup-nav .popup-gmaps,
+    .popup-nav .popup-gmaps:visited {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border-color: rgba(52, 168, 83, 0.45);
+    }
+    .popup-nav .popup-apple,
+    .popup-nav .popup-apple:visited {
+      background: rgba(0, 122, 255, 0.1);
+      color: #0056b3;
+      border-color: rgba(0, 122, 255, 0.4);
+    }
+    @media (prefers-color-scheme: dark) {
+      .popup-nav .popup-waze,
+      .popup-nav .popup-waze:visited {
+        background: rgba(51, 204, 255, 0.12);
+        color: #7ee8ff;
+        border-color: rgba(51, 204, 255, 0.35);
+      }
+      .popup-nav .popup-gmaps,
+      .popup-nav .popup-gmaps:visited {
+        background: rgba(52, 168, 83, 0.12);
+        color: #81c784;
+        border-color: rgba(52, 168, 83, 0.35);
+      }
+      .popup-nav .popup-apple,
+      .popup-nav .popup-apple:visited {
+        background: rgba(0, 122, 255, 0.15);
+        color: #64b5f6;
+        border-color: rgba(0, 122, 255, 0.35);
+      }
+    }
+    .brand-nav-icon {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-nav-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+    }
+    .popup-nav a .brand-nav-icon {
+      width: 34px;
+      height: 34px;
+    }
+
+    /* Custom cluster styling */
+    .marker-cluster-small { background-color: rgba(239, 68, 68, 0.2) !important; }
+    .marker-cluster-small div { background-color: rgba(239, 68, 68, 0.8) !important; color: #fff !important; font-family: 'Rubik', 'Heebo', sans-serif !important; font-weight: 700 !important; }
+    .marker-cluster-medium { background-color: rgba(239, 68, 68, 0.3) !important; }
+    .marker-cluster-medium div { background-color: rgba(239, 68, 68, 0.9) !important; color: #fff !important; font-family: 'Rubik', 'Heebo', sans-serif !important; font-weight: 700 !important; }
+    .marker-cluster-large { background-color: rgba(220, 38, 38, 0.4) !important; }
+    .marker-cluster-large div { background-color: rgba(220, 38, 38, 0.95) !important; color: #fff !important; font-family: 'Rubik', 'Heebo', sans-serif !important; font-weight: 700 !important; }
+
+    /* Install Banner */
+    .install-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      padding: 16px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      box-shadow: var(--shadow-md);
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .install-banner.visible { transform: translateY(0); }
+    .install-banner-icon { font-size: 32px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
+    .install-banner-text { flex: 1; }
+    .install-banner-title { font-weight: 800; font-size: 16px; margin-bottom: 2px; }
+    .install-banner-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .install-banner-btn {
+      background: var(--text-main); color: var(--bg-surface);
+      border: none; border-radius: 99px; padding: 10px 20px;
+      font-family: inherit; font-size: 14px; font-weight: 800;
+      cursor: pointer; box-shadow: var(--shadow-sm);
+    }
+    .install-banner-close {
+      background: var(--bg-base); border: 1px solid var(--border);
+      color: var(--text-muted); font-size: 20px; width: 32px; height: 32px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
       cursor: pointer;
     }
+    body.has-install-banner { padding-top: 80px; }
 
-    body.has-install-banner {
-      padding-top: 70px;
-    }
-
-    /* iOS modal overlay */
+    /* iOS Modal */
     .ios-install-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10001;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      justify-content: center;
-      align-items: flex-end;
-      padding: 16px;
+      display: none; position: fixed; inset: 0; z-index: 10001;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      justify-content: center; align-items: flex-end; padding: 16px;
     }
-
-    .ios-install-overlay.visible {
-      display: flex;
-    }
-
+    .ios-install-overlay.visible { display: flex; }
     .ios-install-modal {
-      background: #fff;
-      border-radius: 28px;
-      padding: 32px 24px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      animation: slideUpModal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-      margin-bottom: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      background: var(--bg-surface); border-radius: var(--radius-lg);
+      padding: 32px 24px; max-width: 400px; width: 100%; text-align: center;
+      animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-bottom: 16px; box-shadow: var(--shadow-lg); border: 1px solid var(--border);
     }
-
     @keyframes slideUpModal {
       from { opacity: 0; transform: translateY(40px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-
-    .ios-install-modal h3 {
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-    }
-
-    .ios-install-modal p {
-      font-size: 15px;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-
+    .ios-install-modal h3 { font-size: 22px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
+    .ios-install-modal p { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
     .ios-steps {
-      text-align: right;
-      margin-bottom: 24px;
-      background: var(--bg-primary);
-      border-radius: 20px;
-      padding: 16px;
-      border: 1px solid var(--border);
+      text-align: right; margin-bottom: 24px; background: var(--bg-base);
+      border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border);
     }
-
     .ios-step {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-primary);
+      display: flex; align-items: center; gap: 16px; padding: 12px 0;
+      border-bottom: 1px solid var(--border); font-size: 15px; font-weight: 600; color: var(--text-main);
     }
-
     .ios-step:last-child { border-bottom: none; }
-
     .ios-step-num {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 800;
-      flex-shrink: 0;
-      box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3);
+      width: 32px; height: 32px; border-radius: 50%; background: var(--text-main); color: var(--bg-surface);
+      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0;
     }
-
-    .ios-step-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
+    .ios-step-icon { font-size: 24px; flex-shrink: 0; }
     .ios-install-close {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 20px;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: 'Heebo', sans-serif;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
+      width: 100%; padding: 16px; border: none; border-radius: var(--radius-md);
+      background: var(--bg-base); color: var(--text-main); font-family: inherit;
+      font-size: 16px; font-weight: 800; cursor: pointer; border: 1px solid var(--border);
     }
 
-    .ios-install-close:active {
-      background: var(--border);
-    }
-
-    @media (max-width: 380px) {
-      h1 { font-size: 28px; }
-      .distance-value { font-size: 36px; }
-      .shelter-card { padding: 16px; }
+    @media (max-width: 400px) {
+      h1 { font-size: 30px; }
+      .distance-value { font-size: 40px; }
+      .shelter-card { padding: 20px; }
       .nav-btn { font-size: 14px; padding: 12px 6px; }
     }
-  </style>
+    
+    .skip-link {
+      position: absolute; top: -100px; left: 0; right: 0;
+      background: var(--accent); color: white; text-align: center;
+      padding: 16px; font-size: 16px; font-weight: 800; z-index: 10000; transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+    *:focus-visible { outline: 3px solid #3b82f6; outline-offset: 2px; border-radius: 8px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 </head>
 <body>
   <!-- Install App Banner -->
@@ -1014,7 +1013,7 @@
         <div class="ios-step">
           <span class="ios-step-num">1</span>
           <span class="ios-step-icon">🧭</span>
-          <span>פתחו דף זה ב-<strong>Safari</strong> (לא Chrome/Brave)</span>
+          <span>פתחו דף זה ב-<strong>Safari</strong></span>
         </div>
         <div class="ios-step">
           <span class="ios-step-num">2</span>
@@ -1038,6 +1037,7 @@
 
   <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
   <div class="bg-pattern" aria-hidden="true"></div>
+  
   <div class="container">
     <header role="banner">
       <span class="shield-icon" aria-hidden="true">🛡️</span>
@@ -1052,182 +1052,115 @@
 
     <main id="main-content">
 
-    <div class="info-banner" role="alert">
-      <strong>🚨 בזמן חירום</strong> — לחצו על הכפתור למציאת המקלט הקרוב ונווטו אליו מיד
-    </div>
-
-    <button class="main-btn btn-locate" id="locateBtn" disabled onclick="findNearestShelter()" aria-label="מצא מקלט קרוב למיקומך">
-      טוען נתונים...
-    </button>
-
-    <div id="errorArea"></div>
-
-    <!-- Map Section -->
-    <div style="margin-top: 24px;">
-      <div class="map-section-header">
-        <span class="map-section-title">🗺️ מפת מקלטים</span>
-        <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMapExpand()">הגדל מפה</button>
+      <div class="info-banner" role="alert">
+        <p class="info-banner__inner"><strong>🚨 בזמן חירום</strong> לחצו על הכפתור למציאת המקלט הקרוב ונווטו אליו מיד</p>
       </div>
 
-      <button class="map-locate-top" id="mapLocateTopBtn" onclick="locateOnMap()" aria-label="הצג את המיקום שלי על המפה">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-        <span>הצג את המיקום שלי על המפה</span>
+      <button type="button" class="main-btn btn-locate" id="locateBtn" disabled onclick="findNearestShelter()" aria-label="מצא מקלט קרוב למיקומך">
+        טוען נתונים...
       </button>
 
-      <div class="map-section" id="mapSection">
-        <div id="map" role="application" aria-label="מפת מקלטים אינטראקטיבית"></div>
-        <button class="map-locate-btn" id="mapLocateBtn" onclick="locateOnMap()" aria-label="מצא אותי במפה">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-          <span>המיקום שלי</span>
-        </button>
-      </div>
-      <p class="map-hint">לחצו על מקלט במפה לקבלת אפשרויות ניווט</p>
-    </div>
+      <div id="errorArea"></div>
 
-    <div class="results" id="results" role="region" aria-label="תוצאות מקלטים קרובים" aria-live="polite"></div>
+      <!-- Map Section -->
+      <div class="map-container" id="mapBlock">
+        <div class="map-header">
+          <span class="map-title">🗺️ מפת מקלטים</span>
+          <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMapExpand()">הגדל מפה</button>
+        </div>
+
+        <button type="button" class="map-locate-top" id="mapLocateTopBtn" onclick="locateOnMap()" aria-label="הצג את המיקום שלי על המפה">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+          <span>הצג את המיקום שלי על המפה</span>
+        </button>
+
+        <div class="map-section" id="mapSection">
+          <div id="map" role="application" aria-label="מפת מקלטים אינטראקטיבית"></div>
+          <button type="button" class="map-locate-btn" id="mapLocateBtn" onclick="locateOnMap()" aria-label="מצא אותי במפה">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+          </button>
+        </div>
+        <p class="map-hint">לחצו על מקלט במפה לקבלת אפשרויות ניווט</p>
+
+        <div class="map-nearest-nav" id="mapNearestNav" hidden role="region" aria-label="ניווט למקלט הקרוב">
+          <div class="map-nearest-nav-head">
+            <div class="map-nearest-nav-title">ניווט למקלט הקרוב ביותר</div>
+            <div class="map-nearest-nav-dist" id="mapNearestDist" aria-live="polite"></div>
+          </div>
+          <div class="nav-buttons" id="mapNearestNavButtons"></div>
+        </div>
+      </div>
+
+      <div class="results" id="results" role="region" aria-label="תוצאות מקלטים קרובים" aria-live="polite"></div>
 
     </main>
 
     <!-- === LEGAL SECTIONS === -->
-    <nav aria-label="מידע משפטי" style="margin-top:16px;">
-
-      <!-- 1. Terms of Use & Disclaimer -->
+    <nav aria-label="מידע משפטי">
       <div class="legal-section" id="termsSection">
         <button class="legal-toggle" onclick="toggleLegal('terms')" aria-expanded="false" aria-controls="termsPanel">
-          <span class="arrow">◀</span>
           <span>תנאי שימוש והצהרת אחריות</span>
+          <span class="arrow">◀</span>
         </button>
         <div class="legal-panel" id="termsPanel" role="region" aria-label="תנאי שימוש">
           <h3>1. כללי</h3>
-          <p>אתר "מקלט קרוב" (להלן: "האתר") הוא פרויקט עצמאי שמטרתו לסייע לציבור באיתור מקלטים ציבוריים. האתר <strong style="color:var(--text-primary);">אינו מופעל, ממומן, או מאושר</strong> על ידי פיקוד העורף, צה״ל, משרד הביטחון, או כל גורם ממשלתי אחר.</p>
-
+          <p>אתר "מקלט קרוב" (להלן: "האתר") הוא פרויקט עצמאי שמטרתו לסייע לציבור באיתור מקלטים ציבוריים. האתר <strong style="color:var(--text-main);">אינו מופעל, ממומן, או מאושר</strong> על ידי פיקוד העורף, צה״ל, משרד הביטחון, או כל גורם ממשלתי אחר.</p>
           <h3>2. כתב ויתור והגבלת אחריות</h3>
-          <p>השימוש באתר ובמידע המוצג בו הינו <strong style="color:var(--text-primary);">על אחריות המשתמש בלבד</strong> והמידע מוצע כמות שהוא (AS IS), ללא כל מצג, התחייבות, או אחריות מכל סוג שהוא, מפורשים או משתמעים, לרבות אך לא רק אחריות לדיוק, אמינות, שלמות, או התאמה למטרה מסוימת.</p>
-          <p>מפעיל האתר <strong style="color:var(--text-primary);">לא יישא בכל אחריות</strong>, ישירה, עקיפה, תוצאתית, או מיוחדת, לכל נזק, הפסד, פגיעה גופנית, או כל תוצאה אחרת שעלולה לנבוע משימוש או הסתמכות על המידע המוצג באתר, לרבות ומבלי לגרוע מכלליות האמור:</p>
+          <p>השימוש באתר ובמידע המוצג בו הינו <strong style="color:var(--text-main);">על אחריות המשתמש בלבד</strong> והמידע מוצע כמות שהוא (AS IS), ללא כל מצג, התחייבות, או אחריות מכל סוג שהוא.</p>
+          <p>מפעיל האתר <strong style="color:var(--text-main);">לא יישא בכל אחריות</strong>, ישירה או עקיפה, לכל נזק שעלול לנבוע משימוש או הסתמכות על המידע המוצג באתר, לרבות:</p>
           <ul>
             <li>אי-דיוקים במיקום מקלטים, מידע חסר, או טעויות בנתונים</li>
             <li>מקלטים שאינם נגישים, נעולים, הרוסים, או שאינם קיימים בפועל</li>
             <li>שגיאות בחישוב מרחקים, זמני הליכה, או כיווני ניווט</li>
-            <li>תקלות טכניות, שגיאות GPS, אי-דיוק במיקום המשתמש, או חוסר זמינות השירות</li>
-            <li>כל החלטה, פעולה, או מחדל שנעשו על סמך מידע מהאתר</li>
-            <li>נזקים שנגרמו עקב שימוש באפליקציות ניווט חיצוניות (Waze, Google Maps)</li>
           </ul>
-
           <h3>3. מקור הנתונים</h3>
-          <p>נתוני מיקום המקלטים מבוססים על מידע ציבורי ופתוח מאת <a href="https://www.govmap.gov.il" target="_blank">GovMap</a> — פורטל המפות הממשלתי של מדינת ישראל, בכפוף לרישיון Creative Commons Attribution (CC-BY). הנתונים עשויים שלא לשקף את המצב העדכני בשטח ואינם מתעדכנים בזמן אמת.</p>
-
+          <p>נתוני מיקום המקלטים מבוססים על מידע ציבורי ופתוח מאת <a href="https://www.govmap.gov.il" target="_blank">GovMap</a>, בכפוף לרישיון Creative Commons Attribution (CC-BY).</p>
           <h3>4. אין תחליף להנחיות רשמיות</h3>
-          <p>אתר זה <strong style="color:var(--text-primary);">אינו מהווה תחליף</strong> להנחיות פיקוד העורף, רשויות הביטחון, הרשות המקומית, או כל גורם רשמי אחר. בעת מצב חירום, יש לפעול אך ורק בהתאם להנחיות הרשמיות של פיקוד העורף.</p>
-
-          <h3>5. קניין רוחני</h3>
-          <p>האתר משתמש בספריות קוד פתוח (Leaflet, MarkerCluster) בהתאם לרישיונותיהן, בנתוני מפה של CARTO ו-OpenStreetMap, ובנתוני מקלטים של GovMap (CC-BY). כל הזכויות במקורות הנ"ל שייכות לבעליהן.</p>
-
-          <h3>6. שינויים בתנאי השימוש</h3>
-          <p>מפעיל האתר רשאי לעדכן תנאים אלה מעת לעת. המשך השימוש באתר לאחר עדכון מהווה הסכמה לתנאים המעודכנים.</p>
-
-          <p style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);">
-            בעצם השימוש באתר זה, המשתמש מאשר כי קרא והבין את תנאי השימוש ומסכים להם במלואם.
-          </p>
+          <p>אתר זה <strong style="color:var(--text-main);">אינו מהווה תחליף</strong> להנחיות פיקוד העורף. בעת מצב חירום, יש לפעול אך ורק בהתאם להנחיות הרשמיות של פיקוד העורף.</p>
         </div>
       </div>
 
-      <!-- 2. Privacy Policy -->
       <div class="legal-section" id="privacySection">
         <button class="legal-toggle" onclick="toggleLegal('privacy')" aria-expanded="false" aria-controls="privacyPanel">
-          <span class="arrow">◀</span>
           <span>מדיניות פרטיות</span>
+          <span class="arrow">◀</span>
         </button>
         <div class="legal-panel" id="privacyPanel" role="region" aria-label="מדיניות פרטיות">
-          <p><strong style="color:var(--text-primary);">עדכון אחרון:</strong> מרץ 2026</p>
-
           <h3>1. מידע שנאסף</h3>
-          <p>האתר משתמש <strong style="color:var(--text-primary);">אך ורק</strong> בנתון הבא:</p>
-          <ul>
-            <li><strong style="color:var(--text-primary);">מיקום גיאוגרפי (Geolocation)</strong> — נקודות ציון (קו רוחב ואורך) מה-GPS או שירותי המיקום של המכשיר שלך, לצורך חישוב המקלט הקרוב אליך.</li>
-          </ul>
-
+          <p>האתר משתמש <strong style="color:var(--text-main);">אך ורק</strong> במיקום גיאוגרפי (Geolocation) לצורך חישוב המקלט הקרוב אליך.</p>
           <h3>2. כיצד המידע משמש</h3>
-          <p>נתוני המיקום משמשים <strong style="color:var(--text-primary);">אך ורק</strong> לחישוב מרחק בין המשתמש לבין מקלטים, והצגת תוצאות מיון. החישוב מתבצע <strong style="color:var(--text-primary);">באופן מקומי בלבד במכשיר שלך</strong> (בדפדפן, בצד הלקוח).</p>
-
+          <p>החישוב מתבצע <strong style="color:var(--text-main);">באופן מקומי בלבד במכשיר שלך</strong> (בדפדפן, בצד הלקוח).</p>
           <h3>3. אחסון מידע</h3>
-          <p>האתר <strong style="color:var(--text-primary);">אינו שומר, אינו מאחסן, ואינו מעביר</strong> את נתוני המיקום שלך לשום שרת, מאגר מידע, או צד שלישי. המיקום נשמר בזיכרון הדפדפן בלבד במהלך הגלישה ונמחק ברגע שסוגרים את הדף.</p>
-
+          <p>האתר <strong style="color:var(--text-main);">אינו שומר, אינו מאחסן, ואינו מעביר</strong> את נתוני המיקום שלך לשום שרת, מאגר מידע, או צד שלישי.</p>
           <h3>4. עוגיות (Cookies)</h3>
-          <p>האתר <strong style="color:var(--text-primary);">אינו משתמש בעוגיות</strong> מכל סוג — לא עוגיות מעקב, לא עוגיות אנליטיקה, ולא עוגיות פרסום. לא מותקנים שירותי צד שלישי כגון Google Analytics, Facebook Pixel, או כל כלי מעקב אחר.</p>
-
-          <h3>5. שירותי צד שלישי</h3>
-          <p>האתר מקשר לשירותים חיצוניים לצורכי ניווט:</p>
-          <ul>
-            <li><strong style="color:var(--text-primary);">Waze</strong> — פתיחת קישור ניווט. כפוף ל<a href="https://www.waze.com/legal/privacy" target="_blank" rel="noopener">מדיניות הפרטיות של Waze</a>.</li>
-            <li><strong style="color:var(--text-primary);">Google Maps</strong> — פתיחת קישור ניווט. כפוף ל<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">מדיניות הפרטיות של Google</a>.</li>
-          </ul>
-          <p>בעת לחיצה על קישורי הניווט, נתוני המיקום מועברים לשירותים אלה בהתאם למדיניות הפרטיות שלהם.</p>
-
-          <h3>6. אבטחת מידע</h3>
-          <p>מאחר שלא נשמר מידע כלל, אין מאגר מידע שניתן לפרוץ אליו. האתר מוגש דרך HTTPS בלבד.</p>
-
-          <h3>7. זכויות המשתמש</h3>
-          <p>בהתאם לחוק הגנת הפרטיות, התשמ"א-1981 (כולל תיקון 13), עומדות לך הזכויות הבאות:</p>
-          <ul>
-            <li>הזכות <strong style="color:var(--text-primary);">לסרב</strong> לשתף מיקום — האתר ימשיך לעבוד (ללא חישוב מרחקים אוטומטי)</li>
-            <li>הזכות <strong style="color:var(--text-primary);">לבטל</strong> הרשאת מיקום בכל עת דרך הגדרות הדפדפן</li>
-            <li>הזכות <strong style="color:var(--text-primary);">לדעת</strong> אילו נתונים נאספים — מפורט במסמך זה</li>
-          </ul>
-          <p>מאחר שלא נשמר מידע אישי, אין צורך בבקשות מחיקה או גישה.</p>
-
-          <h3>8. קהל יעד</h3>
-          <p>האתר אינו מיועד לילדים מתחת לגיל 16 ואינו אוסף ביודעין מידע מקטינים.</p>
-
-          <h3>9. שינויים במדיניות</h3>
-          <p>מדיניות זו עשויה להתעדכן. תאריך העדכון האחרון מצוין בראש הסעיף.</p>
+          <p>האתר <strong style="color:var(--text-main);">אינו משתמש בעוגיות</strong> מכל סוג — לא עוגיות מעקב, לא עוגיות אנליטיקה, ולא עוגיות פרסום.</p>
         </div>
       </div>
 
-      <!-- 3. Accessibility Statement -->
       <div class="legal-section" id="a11ySection">
         <button class="legal-toggle" onclick="toggleLegal('a11y')" aria-expanded="false" aria-controls="a11yPanel">
-          <span class="arrow">◀</span>
           <span>הצהרת נגישות</span>
+          <span class="arrow">◀</span>
         </button>
         <div class="legal-panel" id="a11yPanel" role="region" aria-label="הצהרת נגישות">
           <h3>מחויבות לנגישות</h3>
-          <p>אתר "מקלט קרוב" פועל להנגשת תכניו בהתאם לתקן הישראלי ת"י 5568 ולהנחיות WCAG 2.1 ברמה AA, מתוקף חוק שוויון זכויות לאנשים עם מוגבלויות, תשנ"ח-1998.</p>
-
+          <p>אתר "מקלט קרוב" פועל להנגשת תכניו בהתאם לתקן הישראלי ת"י 5568 ולהנחיות WCAG 2.1 ברמה AA.</p>
           <h3>התאמות שבוצעו</h3>
           <ul>
             <li>תמיכה בניווט מלא באמצעות מקלדת</li>
             <li>תמיכה בקוראי מסך באמצעות תגיות ARIA</li>
-            <li>קישור "דלג לתוכן הראשי" בראש העמוד</li>
-            <li>כותרות בסדר היררכי תקין (h1, h2, h3)</li>
             <li>ניגודיות צבעים בהתאם לתקן AA</li>
             <li>אפשרות להגדלת הטקסט והזום בדפדפן (ללא חסימה)</li>
-            <li>אזורים חיים (aria-live) לעדכון תוצאות בזמן אמת</li>
-            <li>תיאורי טקסט חלופיים לאלמנטים גרפיים</li>
-            <li>תמיכה מלאה בכיוון RTL (ימין לשמאל)</li>
           </ul>
-
-          <h3>מגבלות ידועות</h3>
-          <ul>
-            <li>מפת Leaflet האינטראקטיבית עשויה להיות מוגבלת בנגישות עם קוראי מסך מסוימים</li>
-            <li>חלק מתכני המפה הם צד שלישי (CARTO/OSM) ואינם בשליטתנו המלאה</li>
-          </ul>
-
-          <h3>יצירת קשר בנושא נגישות</h3>
-          <p>נתקלתם בבעיית נגישות? נשמח לשמוע ולתקן. ניתן לפנות אלינו בכל עניין הנוגע לנגישות האתר.</p>
-
-          <p style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);">
-            הצהרה זו עודכנה לאחרונה: מרץ 2026
-          </p>
         </div>
       </div>
-
     </nav>
 
     <footer role="contentinfo">
       נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> — פורטל המפות הממשלתי | רישיון CC-BY<br>
       מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br>
       <span id="shelterCount"></span><br>
-      <span style="font-size:11px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
+      <span style="font-size:11px; opacity:0.7; display:block; margin-top:8px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
       <div class="footer-links">
         <button onclick="toggleLegal('terms')">תנאי שימוש</button>
         <button onclick="toggleLegal('privacy')">מדיניות פרטיות</button>
@@ -1246,9 +1179,28 @@
     let userMarker = null;
     let mapExpanded = false;
 
+    /** iPhone / iPad — לניווט: בלי target=_blank כדי ש-Universal Links יפתחו את האפליקציות */
+    function isIos() {
+      const ua = navigator.userAgent || '';
+      return /iphone|ipad|ipod/i.test(ua) ||
+        (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    }
+
+    function navigationUrls(lat, lng) {
+      const ll = encodeURIComponent(lat) + ',' + encodeURIComponent(lng);
+      const dest = encodeURIComponent(lat + ',' + lng);
+      return {
+        waze: 'https://waze.com/ul?ll=' + ll + '&navigate=yes',
+        gmaps: 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=walking',
+        apple: 'https://maps.apple.com/?daddr=' + ll + '&dirflg=w',
+        target: isIos() ? '_self' : '_blank',
+        showApple: isIos(),
+      };
+    }
+
     const shelterIcon = L.divIcon({
       className: '',
-      html: '<div style="width:12px;height:12px;background:#d63031;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>',
+      html: '<div style="width:14px;height:14px;background:#ef4444;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>',
       iconSize: [12, 12],
       iconAnchor: [6, 6],
       popupAnchor: [0, -8],
@@ -1256,10 +1208,10 @@
 
     const userIcon = L.divIcon({
       className: '',
-      html: `<div style="position:relative;width:22px;height:22px;">
-        <div style="position:absolute;inset:0;background:rgba(66,133,244,0.2);border-radius:50%;animation:userPulse 2s ease-in-out infinite;"></div>
-        <div style="position:absolute;top:4px;left:4px;width:14px;height:14px;background:#4285f4;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>
-      </div>`,
+      html: `<div style="position:relative;width:24px;height:24px;">
+          <div style="position:absolute;inset:0;background:rgba(59,130,246,0.3);border-radius:50%;animation:userPulse 2s ease-in-out infinite;"></div>
+          <div style="position:absolute;top:5px;left:5px;width:14px;height:14px;background:#3b82f6;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>
+        </div>`,
       iconSize: [22, 22],
       iconAnchor: [11, 11],
     });
@@ -1324,37 +1276,49 @@
       clusterGroup.addLayers(markers);
     }
 
+    // לוגואים: Google Maps — וקטור רב־צבעי מ־Wikimedia Commons; Waze — צורת Simple Icons בצבע המותג; Apple Maps — אייקון בסגנון iOS (לא נכס של Apple)
+    const BRAND_IMG_BASE = new URL('brand/', window.location.href).href;
+    function navBrandIcon(file) {
+      return '<span class="brand-nav-icon" aria-hidden="true"><img class="brand-nav-img" src="' + BRAND_IMG_BASE + file + '" alt="" decoding="async" loading="lazy" /></span>';
+    }
+    const WAZE_LOGO_SVG = navBrandIcon('waze.svg');
+    const GMAPS_LOGO_SVG = navBrandIcon('google-maps.svg');
+    const APPLE_MAPS_LOGO_SVG = navBrandIcon('apple-maps.svg');
+
     function openShelterPopup(marker) {
       const lat = marker.shelterLat;
       const lng = marker.shelterLng;
+      const nav = navigationUrls(lat, lng);
+      const tAttr = ' target="' + nav.target + '" rel="noopener noreferrer"';
 
       let distHtml = '';
       if (userLat !== null) {
         const dist = haversineDistance(userLat, userLng, lat, lng);
         const d = formatDistance(dist);
-        distHtml = `<div class="popup-distance">📏 מרחק: <strong>${d.value} ${d.unit}</strong></div>`;
+        distHtml = '<div class="popup-distance">מרחק: <strong>' + d.value + ' ' + d.unit + '</strong></div>';
       }
 
-      const wazeUrl = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
-      const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`;
+      let appleRow = '';
+      if (nav.showApple) {
+        appleRow =
+          '<a href="' + nav.apple + '"' + tAttr + ' class="popup-apple">' +
+          APPLE_MAPS_LOGO_SVG + '<span>מפות Apple (מומלץ באייפון)</span></a>';
+      }
 
       marker.unbindPopup();
-      marker.bindPopup(`
-        <div class="popup-title">🛡️ מקלט</div>
-        ${distHtml}
-        <div class="popup-nav">
-          <a href="${wazeUrl}" target="_blank" rel="noopener" class="popup-waze">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.54 6.63c-1.55-1.54-3.62-2.38-5.82-2.38-2.21 0-4.28.85-5.83 2.38C7.35 8.17 6.5 10.24 6.5 12.44c0 1.59.45 3.11 1.3 4.42-.23 1.07-.8 2.04-1.63 2.75a.5.5 0 00.34.87c1.49 0 2.94-.5 4.13-1.35.96.31 1.97.47 3 .47 2.21 0 4.28-.85 5.83-2.38 1.54-1.55 2.38-3.62 2.38-5.82s-.85-4.28-2.38-5.83l-.03.06zM9.5 13.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            Waze
-          </a>
-          <a href="${gmapsUrl}" target="_blank" rel="noopener" class="popup-gmaps">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            Google
-          </a>
-        </div>
-      `, { closeButton: true, maxWidth: 240, minWidth: 200 }).openPopup();
+      marker.bindPopup(
+        '<div class="popup-title">מקלט ציבורי</div>' +
+        distHtml +
+        '<div class="popup-nav">' +
+          '<a href="' + nav.waze + '"' + tAttr + ' class="popup-waze">' +
+            WAZE_LOGO_SVG + '<span>ניווט ב־Waze</span></a>' +
+          '<a href="' + nav.gmaps + '"' + tAttr + ' class="popup-gmaps">' +
+            GMAPS_LOGO_SVG + '<span>Google Maps</span></a>' +
+          appleRow +
+        '</div>',
+        { closeButton: true, maxWidth: 300, minWidth: 240 }
+      ).openPopup();
     }
-
     function updateUserOnMap() {
       if (!map || userLat === null) return;
 
@@ -1362,8 +1326,8 @@
         userMarker.setLatLng([userLat, userLng]);
       } else {
         userMarker = L.marker([userLat, userLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
-        userMarker.bindPopup('<div style="text-align:center;font-weight:700;font-size:14px;color:#1a1a2e;">📍 המיקום שלך</div>', {
-          closeButton: false, maxWidth: 140,
+        userMarker.bindPopup('<div style="text-align:center;font-family:Rubik,Heebo,sans-serif;font-weight:700;font-size:15px;">המיקום שלך</div>', {
+          closeButton: false, maxWidth: 160,
         });
       }
 
@@ -1380,8 +1344,8 @@
       topBtn.innerHTML = '<span class="spinner-sm"></span> <span>מאתר מיקום...</span>';
 
       const resetBtns = () => {
-        floatBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>המיקום שלי</span>';
-        topBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>הצג את המיקום שלי על המפה</span>';
+        floatBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>';
+        topBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>הצג את המיקום שלי על המפה</span>';
       };
 
       navigator.geolocation.getCurrentPosition(
@@ -1389,27 +1353,29 @@
           userLat = pos.coords.latitude;
           userLng = pos.coords.longitude;
           updateUserOnMap();
+          updateMapNearestNav();
           resetBtns();
-          topBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>✓ המיקום שלי מוצג — לחצו שוב לרענון</span>';
-          topBtn.style.borderColor = '#00d68f';
-          topBtn.style.color = '#00d68f';
-          topBtn.querySelector('svg').style.fill = '#00d68f';
+          topBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>✓ המיקום שלי מוצג — לחצו שוב לרענון</span>';
+          topBtn.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+          topBtn.style.color = '#10b981';
+          topBtn.style.background = 'rgba(16, 185, 129, 0.05)';
         },
         (err) => {
           resetBtns();
           topBtn.innerHTML = '<span>⚠️ לא הצלחנו לאתר — אנא אשרו הרשאת מיקום</span>';
-          topBtn.style.borderColor = '#e94560';
-          topBtn.style.color = '#e94560';
+          topBtn.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+          topBtn.style.color = '#ef4444';
+          topBtn.style.background = 'rgba(239, 68, 68, 0.05)';
           setTimeout(() => {
             resetBtns();
             topBtn.style.borderColor = '';
             topBtn.style.color = '';
+            topBtn.style.background = '';
           }, 4000);
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
       );
     }
-
     function toggleMapExpand() {
       const mapEl = document.getElementById('map');
       const btn = document.getElementById('mapToggleBtn');
@@ -1419,13 +1385,12 @@
         mapEl.style.height = '600px';
         btn.textContent = 'הקטן מפה';
       } else {
-        mapEl.style.height = '400px';
+        mapEl.style.height = '350px';
         btn.textContent = 'הגדל מפה';
       }
 
       setTimeout(() => map.invalidateSize(), 300);
     }
-
     async function loadShelters() {
       try {
         const resp = await fetch('shelters.json');
@@ -1435,16 +1400,16 @@
         document.getElementById('shelterCount').textContent = `${shelters.length.toLocaleString('he-IL')} מקלטים ממופים בכל הארץ`;
         const btn = document.getElementById('locateBtn');
         btn.disabled = false;
-        btn.textContent = '📍 מצא מקלט קרוב';
+        btn.innerHTML = '📍 מצא מקלט קרוב';
 
         initMap();
         populateMap();
+        if (userLat !== null) updateMapNearestNav();
       } catch (e) {
         document.getElementById('statusDot').classList.add('error');
         document.getElementById('statusText').textContent = 'שגיאה בטעינת נתונים';
       }
     }
-
     function haversineDistance(lat1, lon1, lat2, lon2) {
       const R = 6371000;
       const toRad = x => x * Math.PI / 180;
@@ -1458,6 +1423,51 @@
     function formatDistance(meters) {
       if (meters < 1000) return { value: Math.round(meters), unit: 'מטר' };
       return { value: (meters / 1000).toFixed(1), unit: 'ק״מ' };
+    }
+
+    function getNearestShelter() {
+      if (userLat === null || userLng === null || shelters.length === 0) return null;
+      let best = null;
+      let bestD = Infinity;
+      for (let i = 0; i < shelters.length; i++) {
+        const s = shelters[i];
+        const d = haversineDistance(userLat, userLng, s[0], s[1]);
+        if (d < bestD) {
+          bestD = d;
+          best = { lat: s[0], lng: s[1], dist: d };
+        }
+      }
+      return best;
+    }
+
+    function updateMapNearestNav() {
+      const block = document.getElementById('mapNearestNav');
+      const distEl = document.getElementById('mapNearestDist');
+      const btns = document.getElementById('mapNearestNavButtons');
+      const nearest = getNearestShelter();
+      if (!nearest) {
+        block.hidden = true;
+        distEl.innerHTML = '';
+        btns.innerHTML = '';
+        btns.className = 'nav-buttons';
+        return;
+      }
+      block.hidden = false;
+      const d = formatDistance(nearest.dist);
+      distEl.innerHTML = 'במרחק <strong>' + d.value + ' ' + d.unit + '</strong>';
+      const nav = navigationUrls(nearest.lat, nearest.lng);
+      const navTarget = nav.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : ' target="_self" rel="noopener noreferrer"';
+      const appleRow = nav.showApple
+        ? '<a href="' + nav.apple + '"' + navTarget + ' class="nav-btn nav-apple">' +
+          APPLE_MAPS_LOGO_SVG + '<span>מפות Apple</span></a>'
+        : '';
+      btns.className = nav.showApple ? 'nav-buttons nav-buttons--with-apple' : 'nav-buttons';
+      btns.innerHTML =
+        '<a href="' + nav.waze + '"' + navTarget + ' class="nav-btn nav-waze">' +
+        WAZE_LOGO_SVG + '<span>Waze</span></a>' +
+        '<a href="' + nav.gmaps + '"' + navTarget + ' class="nav-btn nav-gmaps">' +
+        GMAPS_LOGO_SVG + '<span>Google Maps</span></a>' +
+        appleRow;
     }
 
     function estimateWalkingTime(meters) {
@@ -1490,7 +1500,7 @@
           updateUserOnMap();
           btn.disabled = false;
           btn.textContent = '🔄 חפש שוב';
-          document.getElementById('mapSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          document.getElementById('mapBlock').scrollIntoView({ behavior: 'smooth', block: 'start' });
         },
         (err) => {
           let msg = 'לא הצלחנו לאתר את המיקום שלך.';
@@ -1504,7 +1514,6 @@
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
       );
     }
-
     function showError(msg) {
       document.getElementById('errorArea').innerHTML =
         `<div class="error-msg">${msg}</div>`;
@@ -1530,8 +1539,12 @@
       sorted.forEach((s, i) => {
         const d = formatDistance(s.dist);
         const walkTime = estimateWalkingTime(s.dist);
-        const wazeUrl = `https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
-        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=walking`;
+        const nav = navigationUrls(s.lat, s.lng);
+        const navTarget = nav.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : ' target="_self" rel="noopener noreferrer"';
+        const appleRow = nav.showApple
+          ? `<a href="${nav.apple}"${navTarget} class="nav-btn nav-apple">${APPLE_MAPS_LOGO_SVG}<span>מפות Apple</span></a>`
+          : '';
+        const navGridClass = nav.showApple ? 'nav-buttons nav-buttons--with-apple' : 'nav-buttons';
         const isNearest = i === 0;
 
         const card = document.createElement('div');
@@ -1550,21 +1563,16 @@
             <span>כ-${walkTime} הליכה</span>
           </div>
           <div class="shelter-coords">${s.lat.toFixed(6)}, ${s.lng.toFixed(6)}</div>
-          <div class="nav-buttons">
-            <a href="${wazeUrl}" target="_blank" rel="noopener" class="nav-btn waze">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.54 6.63c-1.55-1.54-3.62-2.38-5.82-2.38-2.21 0-4.28.85-5.83 2.38C7.35 8.17 6.5 10.24 6.5 12.44c0 1.59.45 3.11 1.3 4.42-.23 1.07-.8 2.04-1.63 2.75a.5.5 0 00.34.87c1.49 0 2.94-.5 4.13-1.35.96.31 1.97.47 3 .47 2.21 0 4.28-.85 5.83-2.38 1.54-1.55 2.38-3.62 2.38-5.82s-.85-4.28-2.38-5.83l-.03.06zM9.5 13.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-              נווט ב-Waze
-            </a>
-            <a href="${gmapsUrl}" target="_blank" rel="noopener" class="nav-btn gmaps">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-              Google Maps
-            </a>
+          <div class="${navGridClass}">
+            <a href="${nav.waze}"${navTarget} class="nav-btn nav-waze">${WAZE_LOGO_SVG}<span>Waze</span></a>
+            <a href="${nav.gmaps}"${navTarget} class="nav-btn nav-gmaps">${GMAPS_LOGO_SVG}<span>Google Maps</span></a>
+            ${appleRow}
           </div>
         `;
         container.appendChild(card);
       });
+      updateMapNearestNav();
     }
-
     function toggleLegal(section) {
       const panels = { terms: 'termsPanel', privacy: 'privacyPanel', a11y: 'a11yPanel' };
       const panel = document.getElementById(panels[section]);
@@ -1599,13 +1607,6 @@
     const installClose = document.getElementById('installClose');
     const iosOverlay = document.getElementById('iosOverlay');
     const iosCloseBtn = document.getElementById('iosCloseBtn');
-
-    // Detects iOS/iPadOS — iPadOS 13+ reports as "Macintosh" so check touch points too
-    function isIos() {
-      const ua = navigator.userAgent;
-      return /iphone|ipad|ipod/i.test(ua) ||
-        (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
-    }
 
     // Detects any WebKit-based browser on iOS (Safari, Chrome on iOS, Brave on iOS)
     function isIosWebKit() {

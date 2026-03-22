@@ -1,9 +1,12 @@
-const CACHE_NAME = 'miklat-v1';
+const CACHE_NAME = 'miklat-v2';
 const ASSETS = [
   '/',
   '/index.html',
   '/shelters.json',
   '/manifest.json',
+  '/brand/google-maps.svg',
+  '/brand/waze.svg',
+  '/brand/apple-maps.svg',
 ];
 
 self.addEventListener('install', (e) => {
