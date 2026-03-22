@@ -29,7 +29,12 @@
   <meta name="twitter:image" content="og-image.png">
   <meta name="twitter:image:alt" content="מקלט קרוב — מצא מקלט בשניות">
 
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="מקלט קרוב">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -770,6 +775,191 @@
 
     .footer-links button:hover { color: var(--text-secondary); }
 
+    /* ===== INSTALL BANNER ===== */
+    .install-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d3436 100%);
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+    }
+
+    .install-banner.visible {
+      transform: translateY(0);
+    }
+
+    .install-banner-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .install-banner-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .install-banner-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .install-banner-sub {
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .install-banner-btn {
+      flex-shrink: 0;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .install-banner-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 12px rgba(214, 48, 49, 0.4);
+    }
+
+    .install-banner-close {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .install-banner-close:hover {
+      color: #fff;
+    }
+
+    .install-banner.visible ~ .container {
+      padding-top: 0;
+    }
+
+    body.has-install-banner {
+      padding-top: 64px;
+    }
+
+    /* iOS modal overlay */
+    .ios-install-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: flex-end;
+      padding: 20px;
+    }
+
+    .ios-install-overlay.visible {
+      display: flex;
+    }
+
+    .ios-install-modal {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      animation: slideUp 0.35s ease-out;
+      margin-bottom: 20px;
+    }
+
+    .ios-install-modal h3 {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .ios-install-modal p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .ios-steps {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .ios-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .ios-step:last-child { border-bottom: none; }
+
+    .ios-step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .ios-step-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .ios-install-close {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Heebo', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .ios-install-close:hover {
+      background: var(--bg-card-hover);
+    }
+
     @media (max-width: 380px) {
       h1 { font-size: 26px; }
       .distance-value { font-size: 30px; }
@@ -779,6 +969,43 @@
   </style>
 </head>
 <body>
+  <!-- Install App Banner -->
+  <div class="install-banner" id="installBanner" role="banner">
+    <span class="install-banner-icon">📲</span>
+    <div class="install-banner-text">
+      <div class="install-banner-title">התקינו כאפליקציה</div>
+      <div class="install-banner-sub">גישה מהירה מהמסך הראשי</div>
+    </div>
+    <button class="install-banner-btn" id="installBtn">התקן</button>
+    <button class="install-banner-close" id="installClose" aria-label="סגור">&times;</button>
+  </div>
+
+  <!-- iOS Install Instructions Modal -->
+  <div class="ios-install-overlay" id="iosOverlay">
+    <div class="ios-install-modal">
+      <h3>🛡️ התקנת מקלט קרוב</h3>
+      <p>הוסיפו את האפליקציה למסך הבית לגישה מהירה בזמן חירום</p>
+      <div class="ios-steps">
+        <div class="ios-step">
+          <span class="ios-step-num">1</span>
+          <span class="ios-step-icon">⬆️</span>
+          <span>לחצו על כפתור <strong>השיתוף</strong> (Share) בתחתית הדפדפן</span>
+        </div>
+        <div class="ios-step">
+          <span class="ios-step-num">2</span>
+          <span class="ios-step-icon">➕</span>
+          <span>בחרו <strong>"הוסף למסך הבית"</strong> (Add to Home Screen)</span>
+        </div>
+        <div class="ios-step">
+          <span class="ios-step-num">3</span>
+          <span class="ios-step-icon">✅</span>
+          <span>לחצו <strong>"הוסף"</strong> — וזהו!</span>
+        </div>
+      </div>
+      <button class="ios-install-close" id="iosCloseBtn">הבנתי</button>
+    </div>
+  </div>
+
   <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
   <div class="bg-pattern" aria-hidden="true"></div>
   <div class="container">
@@ -1333,6 +1560,80 @@
       navigator.geolocation.getCurrentPosition = function(success) {
         success({ coords: { latitude: overrideLat, longitude: overrideLng, accuracy: 10 } });
       };
+    }
+
+    // ===== PWA Install Banner =====
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('installBanner');
+    const installBtn = document.getElementById('installBtn');
+    const installClose = document.getElementById('installClose');
+    const iosOverlay = document.getElementById('iosOverlay');
+    const iosCloseBtn = document.getElementById('iosCloseBtn');
+
+    function isIos() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+
+    function isInStandaloneMode() {
+      return window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+    }
+
+    function showInstallBanner() {
+      if (sessionStorage.getItem('installDismissed')) return;
+      installBanner.classList.add('visible');
+      document.body.classList.add('has-install-banner');
+    }
+
+    function hideInstallBanner() {
+      installBanner.classList.remove('visible');
+      document.body.classList.remove('has-install-banner');
+      sessionStorage.setItem('installDismissed', '1');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      showInstallBanner();
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (isIos()) {
+        iosOverlay.classList.add('visible');
+        return;
+      }
+
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        if (result.outcome === 'accepted') hideInstallBanner();
+        deferredPrompt = null;
+      }
+    });
+
+    installClose.addEventListener('click', hideInstallBanner);
+
+    iosCloseBtn.addEventListener('click', () => {
+      iosOverlay.classList.remove('visible');
+      hideInstallBanner();
+    });
+
+    iosOverlay.addEventListener('click', (e) => {
+      if (e.target === iosOverlay) {
+        iosOverlay.classList.remove('visible');
+      }
+    });
+
+    window.addEventListener('appinstalled', hideInstallBanner);
+
+    if (!isInStandaloneMode()) {
+      if (isIos()) {
+        showInstallBanner();
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
     loadShelters();
