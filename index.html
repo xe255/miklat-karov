@@ -34,7 +34,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="מקלט קרוב">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="apple-touch-icon" href="icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -988,16 +988,21 @@
       <div class="ios-steps">
         <div class="ios-step">
           <span class="ios-step-num">1</span>
-          <span class="ios-step-icon">⬆️</span>
-          <span>לחצו על כפתור <strong>השיתוף</strong> (Share) בתחתית הדפדפן</span>
+          <span class="ios-step-icon">🧭</span>
+          <span>פתחו דף זה ב-<strong>Safari</strong> (לא Chrome/Brave)</span>
         </div>
         <div class="ios-step">
           <span class="ios-step-num">2</span>
-          <span class="ios-step-icon">➕</span>
-          <span>בחרו <strong>"הוסף למסך הבית"</strong> (Add to Home Screen)</span>
+          <span class="ios-step-icon">⬆️</span>
+          <span>לחצו על כפתור <strong>השיתוף</strong> <span style="font-size:18px;">□↑</span> בתחתית המסך</span>
         </div>
         <div class="ios-step">
           <span class="ios-step-num">3</span>
+          <span class="ios-step-icon">➕</span>
+          <span>גללו ובחרו <strong>"הוסף למסך הבית"</strong></span>
+        </div>
+        <div class="ios-step">
+          <span class="ios-step-num">4</span>
           <span class="ios-step-icon">✅</span>
           <span>לחצו <strong>"הוסף"</strong> — וזהו!</span>
         </div>
@@ -1570,8 +1575,16 @@
     const iosOverlay = document.getElementById('iosOverlay');
     const iosCloseBtn = document.getElementById('iosCloseBtn');
 
+    // Detects iOS/iPadOS — iPadOS 13+ reports as "Macintosh" so check touch points too
     function isIos() {
-      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+      const ua = navigator.userAgent;
+      return /iphone|ipad|ipod/i.test(ua) ||
+        (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    }
+
+    // Detects any WebKit-based browser on iOS (Safari, Chrome on iOS, Brave on iOS)
+    function isIosWebKit() {
+      return isIos() && /webkit/i.test(navigator.userAgent) && !/crios/i.test(navigator.userAgent) || isIos();
     }
 
     function isInStandaloneMode() {
@@ -1591,6 +1604,7 @@
       sessionStorage.setItem('installDismissed', '1');
     }
 
+    // Android/desktop Chrome & Brave: native install prompt
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -1598,16 +1612,21 @@
     });
 
     installBtn.addEventListener('click', async () => {
-      if (isIos()) {
+      // iOS (Safari, Chrome on iOS, Brave on iOS) → show manual instructions
+      if (isIosWebKit()) {
         iosOverlay.classList.add('visible');
         return;
       }
 
+      // Android Chrome / Brave / desktop → native prompt
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const result = await deferredPrompt.userChoice;
         if (result.outcome === 'accepted') hideInstallBanner();
         deferredPrompt = null;
+      } else {
+        // beforeinstallprompt didn't fire yet — show generic instructions
+        iosOverlay.classList.add('visible');
       }
     });
 
@@ -1626,12 +1645,12 @@
 
     window.addEventListener('appinstalled', hideInstallBanner);
 
-    if (!isInStandaloneMode()) {
-      if (isIos()) {
-        showInstallBanner();
-      }
+    // Show banner for iOS/iPadOS immediately (Safari, Chrome on iOS, Brave on iOS)
+    if (!isInStandaloneMode() && isIosWebKit()) {
+      showInstallBanner();
     }
 
+    // Register service worker (required for Android PWA install prompt)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
