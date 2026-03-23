@@ -2,57 +2,79 @@
 
 **מצא את המקלט הקרוב אליך בשניות — כי בזמן חירום כל שנייה חשובה.**
 
-אתר שמאפשר לאתר את המקלט הציבורי הקרוב למיקומך, עם ניווט מיידי דרך Waze, Google Maps ומפות Apple (במכשירי iOS).
+אפליקציית ווב חינמית (PWA) לאיתור המקלט הציבורי הקרוב למיקומך מתוך **41,525 מקלטים** ממופים בכל ישראל. ניווט מיידי ב-Waze, Google Maps ו-Apple Maps. עובדת ללא הרשמה ומחוץ לרשת.
+
+🌐 **[miklat.co.il](https://miklat.co.il)**
+
+---
 
 ## תכונות
 
-- 📍 **איתור מיקום** — מאתר את המיקום שלך ומציג את 5 המקלטים הקרובים ביותר
-- 🗺️ **מפה אינטראקטיבית** — מפת מקלטים מלאה עם אלפי נקודות בכל הארץ, כולל מיקום המשתמש על המפה
-- 🧭 **ניווט ליד המפה** — אחרי שיש מיקום, מופיע מתחת למפה בלוק עם המרחק למקלט הקרוב ביותר וקישורי ניווט (בלי לגלול לרשימה)
-- 🚗 **ניווט מיידי** — קישורים ל-Waze, Google Maps ו־Apple Maps (ב־iOS), עם לוגואים בתיקיית `brand/`
-- 🚶 **זמן הליכה** — הערכת זמן הליכה לכל מקלט
-- 📱 **PWA** — אפשרות התקנה למסך הבית (`manifest.json`, `sw.js`)
-- 📱 **מותאם לנייד** — עיצוב רספונסיבי שעובד על כל מכשיר
-- ♿ **נגיש** — עומד בתקן ת"י 5568 (WCAG 2.1 AA)
+| תכונה | תיאור |
+|--------|--------|
+| 📍 **איתור מיקום** | מאתר את המיקום שלך ומציג את 5 המקלטים הקרובים ביותר |
+| 🗺️ **מפה אינטראקטיבית** | 41,525 נקודות מקלטים בכל הארץ, כולל מיקום המשתמש |
+| 🧭 **ניווט ליד המפה** | בלוק ניווט מיידי מתחת למפה, ללא גלילה |
+| 🚗 **ניווט לאפליקציות** | Waze, Google Maps, Apple Maps — כפתור אחד |
+| 🚶 **זמן הליכה** | הערכת זמן הליכה לכל מקלט |
+| 📤 **שיתוף** | שיתוף מיקום + מקלט קרוב ביותר בלחיצה אחת |
+| 🔗 **קישורים עמוקים** | פתיחה עם `?lat=&lng=&lang=` — מוכן מראש |
+| 📱 **PWA** | התקנה למסך הבית, עובד offline |
+| 🌍 **רב-לשוני** | עברית (RTL), English, Русский |
+| ♿ **נגיש** | תקן ת"י 5568 / WCAG 2.1 AA |
+| 🔒 **פרטיות** | אין שמירת מיקום בשרת, אין עוגיות מעקב |
+
+---
 
 ## מבנה הפרויקט
 
-| קובץ / תיקייה | תיאור |
-|---------------|--------|
-| `index.html` | דף יחיד: ממשק, מפה, לוגיקה |
-| `shelters.json` | נקודות מקלטים (קואורדינטות) |
-| `brand/` | קבצי SVG ללוגואי ניווט (ראו סעיף למטה) |
-| `manifest.json` | מניפסט לאפליקציית ווב |
-| `sw.js` | Service worker לאופליין וקאש בסיסי |
+```
+miklat-karov/
+├── index.html        # דף יחיד: ממשק, מפה, לוגיקה, JSON-LD schema
+├── i18n.js           # מחרוזות UI בעברית / אנגלית / רוסית
+├── shelters.json     # 41,525 נקודות מקלטים [lat, lng]
+├── sw.js             # Service Worker — offline + cache
+├── manifest.json     # PWA manifest
+├── llms.txt          # תיאור האתר לסורקי AI / LLM
+├── logo.png          # לוגו האתר
+├── og-image.png      # תמונת Open Graph
+├── brand/
+│   ├── waze.svg
+│   ├── google-maps.svg
+│   └── apple-maps.svg
+└── .cursor/rules/
+    └── seo-aeo.mdc   # כלל Cursor לתקני SEO/AEO 2026
+```
+
+---
 
 ## מקור הנתונים
 
 נתוני מיקום המקלטים מבוססים על מידע ציבורי ופתוח מאת [GovMap](https://www.govmap.gov.il) — פורטל המפות הממשלתי של מדינת ישראל, בכפוף לרישיון **Creative Commons Attribution (CC-BY)**.
 
+---
+
 ## טכנולוגיות
 
-- HTML / CSS / JavaScript (ללא frameworks)
-- [Leaflet](https://leafletjs.com/) — מפות אינטראקטיביות
-- [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) — קיבוץ סמנים
-- [CARTO](https://carto.com/) — שכבת מפה (Voyager)
-- [OpenStreetMap](https://www.openstreetmap.org/) — נתוני מפה
+| ספרייה | שימוש |
+|--------|--------|
+| Vanilla JS / HTML / CSS | ללא frameworks |
+| [Leaflet 1.9.4](https://leafletjs.com/) | מפות אינטראקטיביות |
+| [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) | קיבוץ סמנים |
+| [CARTO Voyager](https://carto.com/) | שכבת מפה |
+| [OpenStreetMap](https://www.openstreetmap.org/) | נתוני מפה (ODbL) |
+| [GoatCounter](https://www.goatcounter.com/) | סטטיסטיקת כניסות ללא עוגיות |
+| Service Worker | אופליין + מטמון |
 
-## לוגואים (`brand/`)
-
-- **Google Maps** — וקטור רב־צבעי מ־[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Google_Maps_icon_(2020).svg) (סימן מסחרי של Google).
-- **Waze** — צורה מ־[Simple Icons](https://simpleicons.org/) (רישיון CC0), בצבע המתאים לרקע הכפתורים.
-- **Apple Maps** — אייקון וקטורי מקורי בסגנון מפת Apple; אינו נכס רשמי של Apple. לשימוש מסחרי מומלץ להחליף לפי [הנחיות המותג של Apple](https://www.apple.com/legal/intellectual-property/guidelinesfor3rdparties/).
+---
 
 ## הפעלה מקומית
 
-האתר הוא אפליקציית ווב סטטית — אין צורך ב־build.
+האתר הוא אפליקציית ווב סטטית — אין צורך ב-build.
 
 ```bash
-# שיבוט הפרויקט
-git clone https://github.com/YOUR_USERNAME/miklat-karov.git
+git clone https://github.com/xe255/miklat-karov.git
 cd miklat-karov
-
-# הפעלה עם שרת מקומי (נדרש ל-Geolocation)
 npx serve .
 # או
 python -m http.server 8000
@@ -60,38 +82,65 @@ python -m http.server 8000
 
 > **שימו לב:** שירותי מיקום (Geolocation) דורשים HTTPS או localhost.
 
-## קישורים עמוקים (URL)
+---
 
-ניתן לפתוח את האתר עם מיקום מוכן מראש (ללא בקשת GPS בטעינה), ועם שפה:
+## קישורים עמוקים (URL params)
 
-| פרמטר | תיאור |
-|--------|--------|
-| `lat` | קו רוחב (WGS84), למשל `32.0853` |
-| `lng` | קו אורך |
-| `lang` | `he` / `en` / `ru` |
+ניתן לפתוח את האתר עם מיקום ושפה מוגדרים מראש:
 
-דוגמה:
+| פרמטר | תיאור | דוגמה |
+|--------|--------|--------|
+| `lat` | קו רוחב WGS84 | `32.0853` |
+| `lng` | קו אורך | `34.7818` |
+| `lang` | שפה | `he` / `en` / `ru` |
 
-```text
-https://example.com/?lang=en&lat=32.0853&lng=34.7818
+```
+https://miklat.co.il/?lang=en&lat=32.0853&lng=34.7818
 ```
 
-הפרמטרים `testlat` ו־`testlng` נתמכים כשמות חלופיים לאותו שימוש. אחרי הטעינה אפשר ללחוץ «חפש שוב» כדי לאתר מחדש לפי מיקום GPS אמיתי.
+- הפרמטרים `testlat` / `testlng` נתמכים כשמות חלופיים לאותו שימוש.
+- אחרי הטעינה אפשר ללחוץ **"חפש שוב"** לאיתור מחדש לפי GPS אמיתי.
+- כפתור **שתף מיקום ומקלט קרוב** מייצר טקסט עם קואורדינטות וקישור לפתיחה מחדש.
 
-כפתור **שתף מיקום ומקלט קרוב** (אחרי חיפוש) מייצר טקסט עם קואורדינטות והקישור לפתיחה מחדש באותם פרמטרים.
+---
+
+## SEO & AEO
+
+האתר מותאם לחיפוש בגוגל ולמנועי AI:
+
+- **JSON-LD schema** — `WebApplication`, `FAQPage`, `BreadcrumbList`
+- **hreflang** — `he`, `en`, `ru`, `x-default`
+- **`llms.txt`** — תיאור מובנה לסורקי LLM
+- **כלל Cursor** — `.cursor/rules/seo-aeo.mdc` לשמירה על תקנים בעריכה עתידית
+
+---
 
 ## פרטיות
 
-- האתר **לא שומר** את מיקום ה-GPS שלך בשרת — החישוב מקומי בדפדפן בלבד
-- **סטטיסטיקת כניסות** (לא מזהה אישית) דרך [GoatCounter](https://www.goatcounter.com/) — ללא מיקום וללא תוצאות חיפוש; פירוט במדיניות הפרטיות באתר ובפאנל «מדיניות פרטיות»
-- האתר **אינו מציב** עוגיות מעקב/פרסום בעצמו; לשירות הסטטיסטיקה יש מדיניות אחסון משלו
+- האתר **לא שומר** את מיקום ה-GPS בשרת — החישוב מקומי בדפדפן בלבד
+- **סטטיסטיקת כניסות** ללא זיהוי אישי דרך [GoatCounter](https://www.goatcounter.com/) — ללא מיקום, ללא תוצאות חיפוש
+- האתר **אינו מציב** עוגיות מעקב/פרסום; לשירות הסטטיסטיקה יש [מדיניות פרטיות משלו](https://www.goatcounter.com/help/privacy)
+
+---
+
+## לוגואים (`brand/`)
+
+- **Google Maps** — וקטור מ-[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Google_Maps_icon_(2020).svg) (סימן מסחרי של Google)
+- **Waze** — [Simple Icons](https://simpleicons.org/) (CC0)
+- **Apple Maps** — אייקון מקורי; אינו נכס רשמי של Apple
+
+---
 
 ## הצהרה משפטית
 
 אתר זה הוא **פרויקט עצמאי** ואינו מופעל, ממומן, או מאושר על ידי פיקוד העורף, צה"ל, משרד הביטחון, או כל גורם ממשלתי אחר. המידע מוצע כמות שהוא (AS IS) ואינו מהווה תחליף להנחיות פיקוד העורף.
 
+---
+
 ## רישיון
 
-- קוד האתר: MIT
-- נתוני מקלטים: CC-BY (GovMap)
-- נתוני מפה: © OpenStreetMap contributors
+| רכיב | רישיון |
+|-------|--------|
+| קוד האתר | MIT |
+| נתוני מקלטים | CC-BY (GovMap) |
+| נתוני מפה | © OpenStreetMap contributors (ODbL) |
