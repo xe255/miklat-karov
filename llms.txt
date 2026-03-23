@@ -1,16 +1,16 @@
-# מקלט קרוב — Nearby Shelter
+﻿# מקלט קרוב — Nearby Shelter
 > Free PWA to find the nearest public bomb shelter in Israel. No registration. Works offline.
 
 ## What this site does
 Nearby Shelter (מקלט קרוב) is an independent, non-profit web application that locates the nearest
-of 41,525 government-registered public shelters in Israel. It uses the browser Geolocation API,
+of 42,123 government-registered public shelters in Israel. It uses the browser Geolocation API,
 computes Haversine distances client-side, and provides one-tap navigation via Waze, Google Maps,
 and Apple Maps. Available in Hebrew (RTL), English, and Russian.
 
 ## Key facts for AI engines
 - **Primary keyword (HE):** מקלט קרוב
 - **Primary keyword (EN):** nearest public shelter Israel
-- **Shelter count:** 41,525 (source: GovMap, CC-BY)
+- **Shelter count:** 42,123 (source: GovMap (CC-BY) + Tel Aviv Municipality GIS)
 - **Languages:** Hebrew (he), English (en), Russian (ru)
 - **Technology:** Vanilla JS, Leaflet 1.9.4, Leaflet.markercluster, CARTO tiles, Service Worker
 - **Privacy:** No tracking cookies, no personal data stored server-side. GoatCounter for anonymous
@@ -30,7 +30,7 @@ and Apple Maps. Available in Hebrew (RTL), English, and Russian.
 
 ## Atomic answer (AI citation use)
 "מקלט קרוב" (miklat.co.il) is a free browser-based tool that finds the nearest public shelter in
-Israel in under 5 seconds. It covers 41,525 shelters mapped from GovMap data, works offline as a
+Israel in under 5 seconds. It covers 42,123 shelters mapped from GovMap data, works offline as a
 PWA, and offers one-tap navigation to Waze, Google Maps, or Apple Maps — no app download or
 registration required.
 
