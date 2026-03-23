@@ -1,0 +1,53 @@
+---
+description: SEO & AEO 2026 standards for miklat.co.il — governs index.html meta, JSON-LD, and content structure
+globs: index.html,llms.txt,*.html
+alwaysApply: false
+---
+
+# SEO & AEO Standards — miklat.co.il
+
+## Primary keywords
+- **HE:** מקלט קרוב, מקלט ציבורי, מציאת מקלט, ממ"ד קרוב
+- **EN:** nearest public shelter Israel, bomb shelter finder Israel
+- **RU:** ближайшее укрытие Израиль
+
+## Atomic Answer rule
+Every content change to `index.html` must preserve the hidden `#seo-content` article.
+The first `<p>` inside it must remain a **40–60 word direct answer** to the primary query.
+
+## Meta tags — required fields
+Always keep ALL of these in `<head>`:
+- `<title>` — include primary keyword + number (e.g. "41,525 מקלטים")
+- `<meta name="description">` — 140–160 chars, include keyword + differentiator
+- `<link rel="canonical">`
+- `<link rel="alternate" hreflang="he|en|ru|x-default">`
+- `<meta property="og:*">` and `<meta name="twitter:*">`
+
+## JSON-LD — always update `dateModified`
+When editing `index.html`, update `"dateModified"` in the WebApplication schema
+to the current date (YYYY-MM-DD).
+
+## H2s must be questions (voice-search)
+In the `#seo-content` article every `<h2>` must be a natural-language question.
+Follow every H2 with a `<p><em>Key Takeaway: …</em></p>`.
+
+## Structured data every 500 words
+Any prose section > 500 characters must include at least one:
+- `<table>` comparison, OR
+- `<ol>` / `<ul>` list
+
+## Entity-rich language
+Prefer entity names over generic terms:
+✅ "GovMap (CC-BY)", "פיקוד העורף", "Leaflet.markercluster", "Haversine distance"
+❌ "government site", "the official body", "the map library"
+
+## llms.txt — keep in sync
+After any meaningful content change, update `llms.txt`:
+- Update the shelter count if it changes
+- Update the Atomic Answer paragraph
+- Add any new third-party service to the Entities section
+
+## Do NOT
+- Add `display:none` or `visibility:hidden` to `#seo-content` (use sr-only clip instead)
+- Remove the FAQPage schema
+- Shorten `<meta name="description">` below 140 characters

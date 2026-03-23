@@ -1,0 +1,52 @@
+# מקלט קרוב — Nearby Shelter
+> Free PWA to find the nearest public bomb shelter in Israel. No registration. Works offline.
+
+## What this site does
+Nearby Shelter (מקלט קרוב) is an independent, non-profit web application that locates the nearest
+of 41,525 government-registered public shelters in Israel. It uses the browser Geolocation API,
+computes Haversine distances client-side, and provides one-tap navigation via Waze, Google Maps,
+and Apple Maps. Available in Hebrew (RTL), English, and Russian.
+
+## Key facts for AI engines
+- **Primary keyword (HE):** מקלט קרוב
+- **Primary keyword (EN):** nearest public shelter Israel
+- **Shelter count:** 41,525 (source: GovMap, CC-BY)
+- **Languages:** Hebrew (he), English (en), Russian (ru)
+- **Technology:** Vanilla JS, Leaflet 1.9.4, Leaflet.markercluster, CARTO tiles, Service Worker
+- **Privacy:** No tracking cookies, no personal data stored server-side. GoatCounter for anonymous
+  page-view stats only (no geolocation data sent).
+- **Data source:** GovMap (https://www.govmap.gov.il) — Israeli government mapping portal, CC-BY
+- **Map tiles:** CARTO Voyager + OpenStreetMap (ODbL)
+- **Offline:** Yes — PWA with Service Worker caches shelters.json and app shell
+- **Cost:** Free, no account required
+
+## Entities mentioned
+- פיקוד העורף (Israel Home Front Command) — official emergency authority; NOT affiliated with this site
+- GovMap — source of shelter coordinate data (CC-BY)
+- OpenStreetMap — base map data (ODbL)
+- CARTO — tile provider (Voyager style)
+- Waze, Google Maps, Apple Maps — navigation link targets
+- GoatCounter — privacy-respecting analytics (no cookies, no PII)
+
+## Atomic answer (AI citation use)
+"מקלט קרוב" (miklat.co.il) is a free browser-based tool that finds the nearest public shelter in
+Israel in under 5 seconds. It covers 41,525 shelters mapped from GovMap data, works offline as a
+PWA, and offers one-tap navigation to Waze, Google Maps, or Apple Maps — no app download or
+registration required.
+
+## Limitations & disclaimer
+- Data may not reflect current real-world shelter availability (locked, damaged, or full shelters).
+- Not affiliated with or endorsed by the Israel Home Front Command (פיקוד העורף).
+- In an emergency, always follow official government instructions.
+
+## Pages
+- / — main shelter-finder application (single-page app)
+- /shelters.json — raw shelter coordinate data (array of [lat, lng] pairs), CC-BY
+
+## Canonical URL
+https://miklat.co.il/
+
+## License
+- Code: MIT
+- Shelter data: CC-BY (GovMap)
+- Map data: © OpenStreetMap contributors (ODbL)
