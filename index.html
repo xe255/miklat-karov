@@ -104,32 +104,41 @@
       font-family: 'Noto Sans', 'Heebo', system-ui, -apple-system, sans-serif;
     }
 
-    .controls-row {
-      direction: ltr;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 10px 12px;
-      margin-bottom: 20px;
-    }
-
-    .lang-bar {
+    /* Label above; pills + theme share one row so the theme aligns with the lang bar */
+    .controls-block {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      margin-bottom: 0;
+      margin-bottom: 20px;
+    }
+
+    /* Column: lang strip then theme — avoids wrap that differed per language (EN/RU vs HE widths) */
+    .controls-row {
+      direction: ltr;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
     }
 
     .theme-toggle-btn {
       flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      min-height: calc(8px + 8px + 1.25em);
       border: 1px solid var(--border);
       background: var(--bg-surface);
       color: var(--text-muted);
       font-family: inherit;
       font-size: 13px;
       font-weight: 700;
+      line-height: 1.25;
       padding: 8px 14px;
       border-radius: 99px;
       cursor: pointer;
@@ -155,9 +164,10 @@
     .lang-bar-btns {
       direction: ltr;
       display: inline-flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: center;
       gap: 6px;
+      max-width: 100%;
       background: var(--bg-surface);
       padding: 4px;
       border-radius: 99px;
@@ -172,6 +182,7 @@
       font-family: inherit;
       font-size: 13px;
       font-weight: 700;
+      line-height: 1.25;
       padding: 8px 14px;
       border-radius: 99px;
       cursor: pointer;
@@ -248,6 +259,7 @@
     }
 
     .status-bar {
+      direction: ltr;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -273,6 +285,126 @@
 
     .status-dot.active { background: var(--success); animation: none; }
     .status-dot.error { background: var(--accent); animation: none; }
+
+    .main-loading-block {
+      margin-bottom: 20px;
+      padding: 20px 0 8px;
+    }
+
+    .load-progress {
+      height: 6px;
+      border-radius: 99px;
+      background: var(--border);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .load-progress__bar {
+      height: 100%;
+      width: 40%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), #f97316);
+      animation: loadIndeterminate 1.1s ease-in-out infinite;
+    }
+
+    @keyframes loadIndeterminate {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(350%); }
+    }
+
+    .load-progress-hint {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .skeleton-ui {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 100%;
+    }
+
+    .skeleton-line {
+      border-radius: var(--radius-sm);
+      background: linear-gradient(
+        90deg,
+        var(--border) 0%,
+        var(--bg-surface-hover) 50%,
+        var(--border) 100%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShine 1.2s ease-in-out infinite;
+    }
+
+    .skeleton-line--lg { height: 52px; }
+    .skeleton-line--btn { height: 56px; border-radius: var(--radius-lg); }
+    .skeleton-line--map { height: 200px; border-radius: var(--radius-lg); }
+
+    @keyframes skeletonShine {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    html[data-theme="dark"] .skeleton-line {
+      background: linear-gradient(
+        90deg,
+        var(--border) 0%,
+        #334155 50%,
+        var(--border) 100%
+      );
+      background-size: 200% 100%;
+    }
+
+    .results-share-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .share-summary-btn {
+      direction: ltr;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .share-summary-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+      background: var(--bg-surface-hover);
+    }
+
+    .share-feedback {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--success);
+      margin: 0 0 12px;
+      min-height: 1.25em;
+    }
+
+    .share-feedback[hidden] {
+      display: none !important;
+    }
+
+    .share-feedback--error {
+      color: var(--accent);
+    }
 
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
@@ -329,6 +461,7 @@
     }
 
     .main-btn {
+      direction: ltr;
       width: 100%;
       margin-bottom: 12px;
       padding: 20px 24px;
@@ -393,6 +526,7 @@
     }
 
     .map-header {
+      direction: ltr;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -413,6 +547,7 @@
       flex: 1 1 12rem;
       min-width: 0;
       line-height: 1.3;
+      unicode-bidi: isolate;
     }
 
     .map-header .map-toggle-btn {
@@ -438,6 +573,7 @@
     }
 
     .map-locate-top {
+      direction: ltr;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -493,7 +629,8 @@
     .map-locate-btn {
       position: absolute;
       bottom: 16px;
-      inset-inline-start: 16px;
+      left: 16px;
+      right: auto;
       z-index: 1000;
       height: 48px;
       padding: 0 20px;
@@ -582,6 +719,7 @@
     }
 
     .results-header {
+      direction: ltr;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -592,6 +730,7 @@
     .results-title {
       font-size: 22px;
       font-weight: 800;
+      unicode-bidi: isolate;
     }
 
     .results-count {
@@ -636,7 +775,8 @@
     .nearest-badge {
       position: absolute;
       top: -12px;
-      inset-inline-end: 24px;
+      right: 24px;
+      left: auto;
       background: var(--accent);
       color: white;
       font-size: 13px;
@@ -647,6 +787,7 @@
     }
 
     .shelter-top {
+      direction: ltr;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -692,6 +833,7 @@
     }
 
     .walking-time {
+      direction: ltr;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -718,6 +860,7 @@
     }
 
     .nav-buttons {
+      direction: ltr;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
@@ -791,6 +934,7 @@
     .legal-section { margin-top: 12px; }
 
     .legal-toggle {
+      direction: ltr;
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
@@ -817,7 +961,6 @@
     }
 
     .legal-toggle.open .arrow { transform: rotate(-90deg); }
-    html[dir="ltr"] .legal-toggle.open .arrow { transform: rotate(90deg); }
 
     .legal-panel {
       display: none;
@@ -859,6 +1002,7 @@
     footer a { color: var(--text-main); text-decoration: none; font-weight: 600; }
 
     .footer-links {
+      direction: ltr;
       display: flex;
       justify-content: center;
       gap: 20px;
@@ -1032,6 +1176,7 @@
     /* Install Banner */
     .install-banner {
       position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      direction: ltr;
       background: var(--bg-surface);
       color: var(--text-main);
       padding: 16px;
@@ -1084,6 +1229,7 @@
       border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border);
     }
     .ios-step {
+      direction: ltr;
       display: flex; align-items: center; gap: 16px; padding: 12px 0;
       border-bottom: 1px solid var(--border); font-size: 15px; font-weight: 600; color: var(--text-main);
     }
@@ -1104,6 +1250,8 @@
       .distance-value { font-size: 40px; }
       .shelter-card { padding: 20px; }
       .nav-btn { font-size: 14px; padding: 12px 6px; }
+      .lang-btn { padding: 7px 9px; font-size: 12px; }
+      .theme-toggle-btn { padding: 7px 12px; font-size: 12px; }
     }
     
     .skip-link {
@@ -1175,16 +1323,16 @@
       <p class="subtitle" id="mainSubtitle">מצא את המקלט הקרוב אליך בשניות</p>
     </header>
 
-    <div class="controls-row" id="controlsRow">
-      <div class="lang-bar" id="langBar" role="navigation" aria-label="שפה">
-        <span class="lang-bar-label" id="langBarLabel" aria-hidden="true">שפה</span>
-        <div class="lang-bar-btns">
+    <div class="controls-block">
+      <span class="lang-bar-label" id="langBarLabel" aria-hidden="true">שפה</span>
+      <div class="controls-row" id="controlsRow">
+        <div class="lang-bar-btns" id="langBar" role="navigation" aria-label="שפה">
           <button type="button" class="lang-btn lang-btn--active" data-lang="he" aria-pressed="true">עברית</button>
           <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">English</button>
           <button type="button" class="lang-btn" data-lang="ru" aria-pressed="false">Русский</button>
         </div>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="מעבר למצב תצוגה כהה">🌙 מצב כהה</button>
       </div>
-      <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="מעבר למצב תצוגה כהה">🌙 מצב כהה</button>
     </div>
 
     <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite" hidden>
@@ -1196,7 +1344,19 @@
       <span id="statusText">טוען נתוני מקלטים...</span>
     </div>
 
-    <main id="main-content">
+    <main id="main-content" aria-busy="true">
+
+      <div id="mainLoadingBlock" class="main-loading-block">
+        <div class="load-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="loadProgressBar" aria-label="" aria-valuetext="">
+          <div class="load-progress__bar"></div>
+        </div>
+        <p class="load-progress-hint" id="loadProgressHint">טוען נתונים…</p>
+        <div class="skeleton-ui" aria-hidden="true">
+          <div class="skeleton-line skeleton-line--lg"></div>
+          <div class="skeleton-line skeleton-line--btn"></div>
+          <div class="skeleton-line skeleton-line--map"></div>
+        </div>
+      </div>
 
       <div class="info-banner" role="alert">
         <p class="info-banner__inner" id="infoBannerInner"><strong>🚨 בזמן חירום</strong> לחצו על הכפתור למציאת המקלט הקרוב ונווטו אליו מיד</p>
@@ -1207,6 +1367,7 @@
       </button>
 
       <div id="errorArea"></div>
+      <p class="share-feedback" id="shareFeedback" role="status" aria-live="polite" hidden></p>
 
       <!-- Map Section -->
       <div class="map-container" id="mapBlock">
@@ -1250,19 +1411,31 @@
         </button>
         <div class="legal-panel" id="termsPanel" role="region" aria-label="תנאי שימוש">
           <h3>1. כללי</h3>
-          <p>אתר "מקלט קרוב" (להלן: "האתר") הוא פרויקט עצמאי שמטרתו לסייע לציבור באיתור מקלטים ציבוריים. האתר <strong style="color:var(--text-main);">אינו מופעל, ממומן, או מאושר</strong> על ידי פיקוד העורף, צה״ל, משרד הביטחון, או כל גורם ממשלתי אחר.</p>
-          <h3>2. כתב ויתור והגבלת אחריות</h3>
-          <p>השימוש באתר ובמידע המוצג בו הינו <strong style="color:var(--text-main);">על אחריות המשתמש בלבד</strong> והמידע מוצע כמות שהוא (AS IS), ללא כל מצג, התחייבות, או אחריות מכל סוג שהוא.</p>
-          <p>מפעיל האתר <strong style="color:var(--text-main);">לא יישא בכל אחריות</strong>, ישירה או עקיפה, לכל נזק שעלול לנבוע משימוש או הסתמכות על המידע המוצג באתר, לרבות:</p>
+          <p>אתר "מקלט קרוב" (להלן: "האתר") הוא פרויקט עצמאי, ללא מטרת רווח, שמטרתו לסייע לציבור באיתור מקלטים ציבוריים. האתר <strong style="color:var(--text-main);">אינו מופעל, ממומן, מאושר, או קשור בכל דרך</strong> לפיקוד העורף, צה״ל, משרד הביטחון, או כל גורם ממשלתי אחר. השימוש באתר מהווה הסכמה מלאה לתנאי שימוש אלה.</p>
+          <h3>2. כתב ויתור מלא והגבלת אחריות</h3>
+          <p><strong style="color:var(--text-main);">האתר, המידע, הנתונים, והשירות ניתנים כמות שהם (AS IS) ו-(AS AVAILABLE), ללא כל אחריות, מצג, ערובה, או התחייבות מכל סוג שהוא — מפורשת, משתמעת, או על פי דין.</strong></p>
+          <p>מפעיל האתר, לרבות כל מי מטעמו, <strong style="color:var(--text-main);">מסיר מעצמו כל אחריות</strong> — חוזית, נזיקית (לרבות רשלנות), או אחרת — לכל נזק ישיר, עקיף, נסיבתי, תוצאתי, מיוחד או עונשי, לרבות:</p>
           <ul>
-            <li>אי-דיוקים במיקום מקלטים, מידע חסר, או טעויות בנתונים</li>
-            <li>מקלטים שאינם נגישים, נעולים, הרוסים, או שאינם קיימים בפועל</li>
+            <li>נזק גוף, פציעה, מוות, או נזק לרכוש הנובע מהסתמכות על מידע האתר</li>
+            <li>מקלטים שמיקומם שגוי, שאינם נגישים, נעולים, הרוסים, מלאים, או שאינם קיימים בפועל</li>
+            <li>נתונים לא מעודכנים, חסרים, שגויים, או מטעים</li>
             <li>שגיאות בחישוב מרחקים, זמני הליכה, או כיווני ניווט</li>
+            <li>תקלות טכניות, אי-זמינות של האתר, או כשל בטעינת הנתונים</li>
+            <li>כל נזק שייגרם עקב אי-יכולת להגיע למקלט בזמן</li>
           </ul>
-          <h3>3. מקור הנתונים</h3>
-          <p>נתוני מיקום המקלטים מבוססים על מידע ציבורי ופתוח מאת <a href="https://www.govmap.gov.il" target="_blank">GovMap</a>, בכפוף לרישיון Creative Commons Attribution (CC-BY).</p>
-          <h3>4. אין תחליף להנחיות רשמיות</h3>
-          <p>אתר זה <strong style="color:var(--text-main);">אינו מהווה תחליף</strong> להנחיות פיקוד העורף. בעת מצב חירום, יש לפעול אך ורק בהתאם להנחיות הרשמיות של פיקוד העורף.</p>
+          <p>הגבלת האחריות תחול אף אם מפעיל האתר הוזהר מפני האפשרות לנזק כאמור.</p>
+          <h3>3. הסתמכות על המידע</h3>
+          <p><strong style="color:var(--text-main);">המשתמש מצהיר כי הוא מודע לכך שהמידע עשוי להיות שגוי, חלקי, או לא מעודכן, ומקבל על עצמו את מלוא הסיכון הכרוך בהסתמכות עליו.</strong> אין לראות במידע המוצג באתר תחליף לתוכניות חירום. המשתמש אחראי לאמת מראש את מיקום המקלטים הרלוונטיים אליו.</p>
+          <h3>4. מקור הנתונים</h3>
+          <p>נתוני מיקום המקלטים מבוססים על שני מקורות ציבוריים ופתוחים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> — פורטל המפות הממשלתי (CC-BY), ו-<a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> — קהילת המיפוי הפתוח (ODbL). הנתונים מובאים כמות שהם ועשויים שלא לשקף את המצב בפועל. מפעיל האתר אינו אחראי על תוכן מקורות אלה.</p>
+          <h3>5. אין תחליף להנחיות רשמיות</h3>
+          <p>אתר זה <strong style="color:var(--text-main);">אינו מהווה תחליף</strong> להנחיות פיקוד העורף. בעת מצב חירום, יש לפעול אך ורק בהתאם להנחיות הרשמיות של פיקוד העורף ורשויות המדינה.</p>
+          <h3>6. שיפוי</h3>
+          <p>המשתמש מתחייב לשפות את מפעיל האתר ולפצותו בגין כל תביעה, נזק, הפסד, או הוצאה (לרבות שכר טרחת עורך דין) הנובעים מהפרת תנאי שימוש אלה או מהשימוש באתר.</p>
+          <h3>7. דין חל וסמכות שיפוט</h3>
+          <p>תנאי שימוש אלה כפופים לדיני מדינת ישראל בלבד. סמכות השיפוט הבלעדית לכל עניין הנוגע לאתר מסורה לבתי המשפט המוסמכים במחוז תל אביב-יפו.</p>
+          <h3>8. שינויים בתנאים</h3>
+          <p>מפעיל האתר רשאי לשנות תנאים אלה בכל עת וללא הודעה מוקדמת. המשך השימוש באתר לאחר שינוי כאמור מהווה הסכמה לתנאים המעודכנים.</p>
         </div>
       </div>
 
@@ -1303,7 +1476,7 @@
     </nav>
 
     <footer role="contentinfo">
-      <div id="footerMapBlock">נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> — פורטל המפות הממשלתי | רישיון CC-BY<br>
+      <div id="footerMapBlock">נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> (CC-BY) + <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)<br>
       מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br></div>
       <span id="shelterCount"></span><br>
       <span id="footerDisclaimer" style="font-size:11px; opacity:0.7; display:block; margin-top:8px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
@@ -1315,6 +1488,7 @@
     </footer>
   </div>
 
+  <script data-goatcounter="https://miklat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="i18n.js"></script>
@@ -1326,6 +1500,96 @@
     let userMarker = null;
     let mapExpanded = false;
     let uiLang = 'he';
+    let shareFeedbackTimer = null;
+
+    function readCoordsFromUrl() {
+      try {
+        const p = new URLSearchParams(window.location.search);
+        const latS = p.get('lat') != null ? p.get('lat') : p.get('testlat');
+        const lngS = p.get('lng') != null ? p.get('lng') : p.get('testlng');
+        if (latS == null || lngS === null || latS === '' || lngS === '') return null;
+        const lat = parseFloat(latS);
+        const lng = parseFloat(lngS);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+        if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+        return { lat: lat, lng: lng };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function setSheltersLoadingUi(complete) {
+      const block = document.getElementById('mainLoadingBlock');
+      const main = document.getElementById('main-content');
+      if (!block) return;
+      if (complete) {
+        block.hidden = true;
+        if (main) main.removeAttribute('aria-busy');
+      } else {
+        block.hidden = false;
+        if (main) main.setAttribute('aria-busy', 'true');
+      }
+    }
+
+    function buildShareUrl() {
+      const params = new URLSearchParams();
+      params.set('lang', uiLang);
+      if (userLat !== null && userLng !== null) {
+        params.set('lat', userLat.toFixed(6));
+        params.set('lng', userLng.toFixed(6));
+      }
+      const q = params.toString();
+      return window.location.origin + window.location.pathname + (q ? '?' + q : '');
+    }
+
+    function buildShareText() {
+      const nearest = getNearestShelter();
+      if (userLat === null || userLng === null || !nearest) return '';
+      const d = formatDistance(nearest.dist);
+      const url = buildShareUrl();
+      return t('shareBody')
+        .replace(/\{myLat\}/g, userLat.toFixed(6))
+        .replace(/\{myLng\}/g, userLng.toFixed(6))
+        .replace(/\{shLat\}/g, nearest.lat.toFixed(6))
+        .replace(/\{shLng\}/g, nearest.lng.toFixed(6))
+        .replace(/\{distVal\}/g, String(d.value))
+        .replace(/\{distUnit\}/g, d.unit)
+        .replace(/\{url\}/g, url);
+    }
+
+    function showShareFeedback(message, isError) {
+      const el = document.getElementById('shareFeedback');
+      if (!el) return;
+      el.textContent = message;
+      el.hidden = false;
+      el.classList.toggle('share-feedback--error', !!isError);
+      if (shareFeedbackTimer) clearTimeout(shareFeedbackTimer);
+      shareFeedbackTimer = setTimeout(function () {
+        el.hidden = true;
+        el.textContent = '';
+        el.classList.remove('share-feedback--error');
+      }, 3500);
+    }
+
+    async function shareShelterSummary() {
+      const text = buildShareText();
+      if (!text) return;
+      const title = t('shareSubject');
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: title, text: text });
+          return;
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        showShareFeedback(t('shareCopied'), false);
+      } catch (e2) {
+        showShareFeedback(t('shareFailed'), true);
+      }
+    }
 
     function i18nPack() {
       return window.MIKLAT_I18N;
@@ -1398,6 +1662,13 @@
       const dot = document.getElementById('statusDot');
       if (dot && !dot.classList.contains('active') && !dot.classList.contains('error')) {
         document.getElementById('statusText').textContent = t('statusLoading');
+      }
+      const loadHint = document.getElementById('loadProgressHint');
+      const loadBar = document.getElementById('loadProgressBar');
+      if (loadHint) loadHint.textContent = t('loadProgressHint');
+      if (loadBar) {
+        loadBar.setAttribute('aria-label', t('loadProgressAria'));
+        loadBar.setAttribute('aria-valuetext', t('loadProgressHint'));
       }
     }
 
@@ -1762,6 +2033,7 @@
       setTimeout(() => map.invalidateSize(), 300);
     }
     async function loadShelters() {
+      setSheltersLoadingUi(false);
       try {
         const resp = await fetch('shelters.json');
         if (!resp.ok) throw new Error('bad response');
@@ -1773,18 +2045,25 @@
           shelters.length.toLocaleString(localeTag()) + ' ' + t('shelterMapped');
         const btn = document.getElementById('locateBtn');
         btn.disabled = false;
-        btn.setAttribute('data-locate-state', 'ready');
-        syncLocateButtonLabel();
-        updateOfflineBanner();
-
         initMap();
         populateMap();
-        if (userLat !== null) updateMapNearestNav();
+        if (userLat !== null && userLng !== null) {
+          btn.setAttribute('data-locate-state', 'again');
+          displayResults();
+          updateUserOnMap();
+          updateMapNearestNav();
+        } else {
+          btn.setAttribute('data-locate-state', 'ready');
+        }
+        syncLocateButtonLabel();
+        updateOfflineBanner();
       } catch (e) {
         document.getElementById('statusDot').classList.add('error');
         document.getElementById('statusText').textContent =
           navigator.onLine ? t('statusError') : t('statusErrorOffline');
         updateOfflineBanner();
+      } finally {
+        setSheltersLoadingUi(true);
       }
     }
     function haversineDistance(lat1, lon1, lat2, lon2) {
@@ -1915,7 +2194,15 @@
           <span class="results-title">${t('resultsTitle')}</span>
           <span class="results-count">${t('resultsCount')}</span>
         </div>
+        <div class="results-share-row">
+          <button type="button" class="share-summary-btn" id="shareSummaryBtn">📤 ${t('shareSummaryBtn')}</button>
+        </div>
       `;
+      const shareBtn = document.getElementById('shareSummaryBtn');
+      if (shareBtn) {
+        shareBtn.setAttribute('aria-label', t('shareSummaryAria'));
+        shareBtn.addEventListener('click', shareShelterSummary);
+      }
 
       sorted.forEach((s, i) => {
         const d = formatDistance(s.dist);
@@ -1970,15 +2257,6 @@
       if (!isOpen) {
         panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('testlat') && urlParams.has('testlng')) {
-      const overrideLat = parseFloat(urlParams.get('testlat'));
-      const overrideLng = parseFloat(urlParams.get('testlng'));
-      navigator.geolocation.getCurrentPosition = function(success) {
-        success({ coords: { latitude: overrideLat, longitude: overrideLng, accuracy: 10 } });
-      };
     }
 
     // ===== PWA Install Banner =====
@@ -2063,6 +2341,11 @@
     }
 
     initMiklatLang();
+    const coordsFromUrl = readCoordsFromUrl();
+    if (coordsFromUrl) {
+      userLat = coordsFromUrl.lat;
+      userLng = coordsFromUrl.lng;
+    }
     initMiklatTheme();
     window.addEventListener('online', updateOfflineBanner);
     window.addEventListener('offline', updateOfflineBanner);
