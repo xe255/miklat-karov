@@ -6,7 +6,10 @@
   <title>מקלט קרוב - מצא את המקלט הקרוב אליך בזמן חירום</title>
   <meta name="description" content="מצא את המקלט או הממ״ד הקרוב למיקומך בזמן חירום. ניווט מהיר דרך Waze ו-Google Maps. נתונים מבוססי GovMap.">
   <meta name="keywords" content="מקלט, מקלטים, ממד, ממ״ד, חירום, צבע אדום, פיקוד העורף, מפה, ניווט, בטחון">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#ffffff" id="themeColorMeta">
+  <script>
+    (function(){try{if(localStorage.getItem('miklatTheme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
+  </script>
   <meta name="robots" content="index, follow">
   <meta name="author" content="מקלט קרוב">
   <link rel="canonical" href="https://miklat.co.il/">
@@ -43,6 +46,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <style>
     :root {
+      color-scheme: light;
       --bg-base: #f8fafc;
       --bg-surface: #ffffff;
       --bg-surface-hover: #f1f5f9;
@@ -68,20 +72,19 @@
       --shadow-lg: 0 16px 32px rgba(0,0,0,0.1);
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-base: #020617;
-        --bg-surface: #0f172a;
-        --bg-surface-hover: #1e293b;
-        --text-main: #f8fafc;
-        --text-muted: #94a3b8;
-        --border: #1e293b;
-        --waze-text: #33ccff;
-        --gmaps-text: #4ade80;
-        --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
-        --shadow-md: 0 8px 16px rgba(0,0,0,0.4);
-        --shadow-lg: 0 16px 32px rgba(0,0,0,0.5);
-      }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg-base: #020617;
+      --bg-surface: #0f172a;
+      --bg-surface-hover: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1e293b;
+      --waze-text: #33ccff;
+      --gmaps-text: #4ade80;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+      --shadow-md: 0 8px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 16px 32px rgba(0,0,0,0.5);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -101,12 +104,44 @@
       font-family: 'Noto Sans', 'Heebo', system-ui, -apple-system, sans-serif;
     }
 
+    .controls-row {
+      direction: ltr;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px 12px;
+      margin-bottom: 20px;
+    }
+
     .lang-bar {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 0;
+    }
+
+    .theme-toggle-btn {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 99px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+      background: var(--bg-surface-hover);
     }
 
     .lang-bar-label {
@@ -950,25 +985,23 @@
       color: #0056b3;
       border-color: rgba(0, 122, 255, 0.4);
     }
-    @media (prefers-color-scheme: dark) {
-      .popup-nav .popup-waze,
-      .popup-nav .popup-waze:visited {
-        background: rgba(51, 204, 255, 0.12);
-        color: #7ee8ff;
-        border-color: rgba(51, 204, 255, 0.35);
-      }
-      .popup-nav .popup-gmaps,
-      .popup-nav .popup-gmaps:visited {
-        background: rgba(52, 168, 83, 0.12);
-        color: #81c784;
-        border-color: rgba(52, 168, 83, 0.35);
-      }
-      .popup-nav .popup-apple,
-      .popup-nav .popup-apple:visited {
-        background: rgba(0, 122, 255, 0.15);
-        color: #64b5f6;
-        border-color: rgba(0, 122, 255, 0.35);
-      }
+    html[data-theme="dark"] .popup-nav .popup-waze,
+    html[data-theme="dark"] .popup-nav .popup-waze:visited {
+      background: rgba(51, 204, 255, 0.12);
+      color: #7ee8ff;
+      border-color: rgba(51, 204, 255, 0.35);
+    }
+    html[data-theme="dark"] .popup-nav .popup-gmaps,
+    html[data-theme="dark"] .popup-nav .popup-gmaps:visited {
+      background: rgba(52, 168, 83, 0.12);
+      color: #81c784;
+      border-color: rgba(52, 168, 83, 0.35);
+    }
+    html[data-theme="dark"] .popup-nav .popup-apple,
+    html[data-theme="dark"] .popup-nav .popup-apple:visited {
+      background: rgba(0, 122, 255, 0.15);
+      color: #64b5f6;
+      border-color: rgba(0, 122, 255, 0.35);
     }
     .brand-nav-icon {
       flex-shrink: 0;
@@ -1142,13 +1175,16 @@
       <p class="subtitle" id="mainSubtitle">מצא את המקלט הקרוב אליך בשניות</p>
     </header>
 
-    <div class="lang-bar" id="langBar" role="navigation" aria-label="שפה">
-      <span class="lang-bar-label" id="langBarLabel" aria-hidden="true">שפה</span>
-      <div class="lang-bar-btns">
-        <button type="button" class="lang-btn lang-btn--active" data-lang="he" aria-pressed="true">עברית</button>
-        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">English</button>
-        <button type="button" class="lang-btn" data-lang="ru" aria-pressed="false">Русский</button>
+    <div class="controls-row" id="controlsRow">
+      <div class="lang-bar" id="langBar" role="navigation" aria-label="שפה">
+        <span class="lang-bar-label" id="langBarLabel" aria-hidden="true">שפה</span>
+        <div class="lang-bar-btns">
+          <button type="button" class="lang-btn lang-btn--active" data-lang="he" aria-pressed="true">עברית</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">English</button>
+          <button type="button" class="lang-btn" data-lang="ru" aria-pressed="false">Русский</button>
+        </div>
       </div>
+      <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="מעבר למצב תצוגה כהה">🌙 מצב כהה</button>
     </div>
 
     <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite" hidden>
@@ -1358,6 +1394,7 @@
       syncMapToggleLabel();
       syncLocateButtonLabel();
       updateOfflineBanner();
+      syncThemeToggleLabel();
       const dot = document.getElementById('statusDot');
       if (dot && !dot.classList.contains('active') && !dot.classList.contains('error')) {
         document.getElementById('statusText').textContent = t('statusLoading');
@@ -1368,6 +1405,40 @@
       const btn = document.getElementById('mapToggleBtn');
       if (!btn) return;
       btn.textContent = mapExpanded ? t('mapShrink') : t('mapExpand');
+    }
+
+    function getUiTheme() {
+      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+
+    function applyUiTheme(theme) {
+      const dark = theme === 'dark';
+      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.removeAttribute('data-theme');
+      try {
+        localStorage.setItem('miklatTheme', dark ? 'dark' : 'light');
+      } catch (e) {}
+      const meta = document.getElementById('themeColorMeta');
+      if (meta) meta.setAttribute('content', dark ? '#020617' : '#ffffff');
+      syncThemeToggleLabel();
+    }
+
+    function toggleUiTheme() {
+      applyUiTheme(getUiTheme() === 'dark' ? 'light' : 'dark');
+    }
+
+    function syncThemeToggleLabel() {
+      const btn = document.getElementById('themeToggleBtn');
+      if (!btn) return;
+      const dark = getUiTheme() === 'dark';
+      btn.textContent = dark ? t('themeGoLight') : t('themeGoDark');
+      btn.setAttribute('aria-label', dark ? t('themeAriaGoLight') : t('themeAriaGoDark'));
+    }
+
+    function initMiklatTheme() {
+      const meta = document.getElementById('themeColorMeta');
+      if (meta) meta.setAttribute('content', getUiTheme() === 'dark' ? '#020617' : '#ffffff');
+      syncThemeToggleLabel();
     }
 
     function updateOfflineBanner() {
@@ -1471,6 +1542,10 @@
       const b = e.target.closest('.lang-btn');
       if (!b) return;
       setLang(b.getAttribute('data-lang'));
+    });
+
+    document.getElementById('themeToggleBtn').addEventListener('click', function () {
+      toggleUiTheme();
     });
 
     /** iPhone / iPad — לניווט: בלי target=_blank כדי ש-Universal Links יפתחו את האפליקציות */
@@ -1988,6 +2063,7 @@
     }
 
     initMiklatLang();
+    initMiklatTheme();
     window.addEventListener('online', updateOfflineBanner);
     window.addEventListener('offline', updateOfflineBanner);
     updateOfflineBanner();

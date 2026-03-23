@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miklat-v4';
+const CACHE_NAME = 'miklat-v5';
 const ASSETS = [
   '/',
   '/index.html',
