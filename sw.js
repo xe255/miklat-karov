@@ -1,7 +1,8 @@
-const CACHE_NAME = 'miklat-v2';
+const CACHE_NAME = 'miklat-v3';
 const ASSETS = [
   '/',
   '/index.html',
+  '/i18n.js',
   '/shelters.json',
   '/manifest.json',
   '/brand/google-maps.svg',

@@ -37,7 +37,7 @@
   <link rel="apple-touch-icon" href="icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -94,6 +94,66 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
+    }
+
+    html[lang="en"] body,
+    html[lang="ru"] body {
+      font-family: 'Noto Sans', 'Heebo', system-ui, -apple-system, sans-serif;
+    }
+
+    .lang-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .lang-bar-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .lang-bar-btns {
+      direction: ltr;
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      padding: 4px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-btn:hover {
+      color: var(--text-main);
+    }
+
+    .lang-btn--active {
+      background: var(--text-main);
+      color: var(--bg-surface);
+    }
+
+    .lang-btn--active:hover {
+      color: var(--bg-surface);
     }
 
     .bg-pattern {
@@ -203,6 +263,30 @@
 
     .info-banner__inner strong {
       color: var(--accent);
+      font-weight: 800;
+    }
+
+    .offline-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .offline-banner__inner {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.55;
+      max-width: 36em;
+      margin-inline: auto;
+    }
+
+    .offline-banner__inner strong {
+      color: #b45309;
       font-weight: 800;
     }
 
@@ -371,7 +455,7 @@
     .map-locate-btn {
       position: absolute;
       bottom: 16px;
-      left: 16px;
+      inset-inline-start: 16px;
       z-index: 1000;
       height: 48px;
       padding: 0 20px;
@@ -514,7 +598,7 @@
     .nearest-badge {
       position: absolute;
       top: -12px;
-      right: 24px;
+      inset-inline-end: 24px;
       background: var(--accent);
       color: white;
       font-size: 13px;
@@ -695,6 +779,7 @@
     }
 
     .legal-toggle.open .arrow { transform: rotate(-90deg); }
+    html[dir="ltr"] .legal-toggle.open .arrow { transform: rotate(90deg); }
 
     .legal-panel {
       display: none;
@@ -721,7 +806,7 @@
 
     .legal-panel h3:first-child { margin-top: 0; }
     .legal-panel p { margin-bottom: 12px; }
-    .legal-panel ul { padding-right: 24px; margin-bottom: 12px; }
+    .legal-panel ul { padding-inline-start: 24px; margin-bottom: 12px; }
     .legal-panel li { margin-bottom: 8px; }
     .legal-panel a { color: var(--accent); font-weight: 700; }
 
@@ -776,6 +861,15 @@
       box-shadow: var(--shadow-lg) !important;
       font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
       direction: rtl;
+    }
+    html[dir="ltr"] .leaflet-popup-content-wrapper {
+      direction: ltr;
+    }
+    html[dir="ltr"] .leaflet-popup-content,
+    html[dir="ltr"] .popup-title,
+    html[dir="ltr"] .popup-distance,
+    html[dir="ltr"] .popup-nav a {
+      font-family: 'Noto Sans', 'Rubik', system-ui, sans-serif !important;
     }
     .leaflet-popup-content {
       font-family: 'Rubik', 'Heebo', system-ui, sans-serif !important;
@@ -950,7 +1044,7 @@
     .ios-install-modal h3 { font-size: 22px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
     .ios-install-modal p { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
     .ios-steps {
-      text-align: right; margin-bottom: 24px; background: var(--bg-base);
+      text-align: start; margin-bottom: 24px; background: var(--bg-base);
       border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border);
     }
     .ios-step {
@@ -997,8 +1091,8 @@
   <div class="install-banner" id="installBanner" role="banner">
     <span class="install-banner-icon">📲</span>
     <div class="install-banner-text">
-      <div class="install-banner-title">התקינו כאפליקציה</div>
-      <div class="install-banner-sub">גישה מהירה מהמסך הראשי</div>
+      <div class="install-banner-title" id="installTitle">התקינו כאפליקציה</div>
+      <div class="install-banner-sub" id="installSub">גישה מהירה מהמסך הראשי</div>
     </div>
     <button class="install-banner-btn" id="installBtn">התקן</button>
     <button class="install-banner-close" id="installClose" aria-label="סגור">&times;</button>
@@ -1007,43 +1101,56 @@
   <!-- iOS Install Instructions Modal -->
   <div class="ios-install-overlay" id="iosOverlay">
     <div class="ios-install-modal">
-      <h3>🛡️ התקנת מקלט קרוב</h3>
-      <p>הוסיפו את האפליקציה למסך הבית לגישה מהירה בזמן חירום</p>
+      <h3 id="iosModalTitle">🛡️ התקנת מקלט קרוב</h3>
+      <p id="iosModalLead">הוסיפו את האפליקציה למסך הבית לגישה מהירה בזמן חירום</p>
       <div class="ios-steps">
         <div class="ios-step">
           <span class="ios-step-num">1</span>
           <span class="ios-step-icon">🧭</span>
-          <span>פתחו דף זה ב-<strong>Safari</strong></span>
+          <span id="iosStep1">פתחו דף זה ב-<strong>Safari</strong></span>
         </div>
         <div class="ios-step">
           <span class="ios-step-num">2</span>
           <span class="ios-step-icon">⬆️</span>
-          <span>לחצו על כפתור <strong>השיתוף</strong> <span style="font-size:18px;">□↑</span> בתחתית המסך</span>
+          <span id="iosStep2">לחצו על כפתור <strong>השיתוף</strong> <span style="font-size:18px;">□↑</span> בתחתית המסך</span>
         </div>
         <div class="ios-step">
           <span class="ios-step-num">3</span>
           <span class="ios-step-icon">➕</span>
-          <span>גללו ובחרו <strong>"הוסף למסך הבית"</strong></span>
+          <span id="iosStep3">גללו ובחרו <strong>"הוסף למסך הבית"</strong></span>
         </div>
         <div class="ios-step">
           <span class="ios-step-num">4</span>
           <span class="ios-step-icon">✅</span>
-          <span>לחצו <strong>"הוסף"</strong> — וזהו!</span>
+          <span id="iosStep4">לחצו <strong>"הוסף"</strong> — וזהו!</span>
         </div>
       </div>
       <button class="ios-install-close" id="iosCloseBtn">הבנתי</button>
     </div>
   </div>
 
-  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+  <a href="#main-content" class="skip-link" id="skipLink">דלג לתוכן הראשי</a>
   <div class="bg-pattern" aria-hidden="true"></div>
   
   <div class="container">
     <header role="banner">
       <span class="shield-icon" aria-hidden="true">🛡️</span>
-      <h1>מקלט קרוב</h1>
-      <p class="subtitle">מצא את המקלט הקרוב אליך בשניות</p>
+      <h1 id="mainHeading">מקלט קרוב</h1>
+      <p class="subtitle" id="mainSubtitle">מצא את המקלט הקרוב אליך בשניות</p>
     </header>
+
+    <div class="lang-bar" id="langBar" role="navigation" aria-label="שפה">
+      <span class="lang-bar-label" id="langBarLabel" aria-hidden="true">שפה</span>
+      <div class="lang-bar-btns">
+        <button type="button" class="lang-btn lang-btn--active" data-lang="he" aria-pressed="true">עברית</button>
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">English</button>
+        <button type="button" class="lang-btn" data-lang="ru" aria-pressed="false">Русский</button>
+      </div>
+    </div>
+
+    <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite" hidden>
+      <p class="offline-banner__inner" id="offlineBannerInner"></p>
+    </div>
 
     <div class="status-bar" id="statusBar" role="status" aria-live="polite">
       <span class="status-dot" id="statusDot" aria-hidden="true"></span>
@@ -1053,10 +1160,10 @@
     <main id="main-content">
 
       <div class="info-banner" role="alert">
-        <p class="info-banner__inner"><strong>🚨 בזמן חירום</strong> לחצו על הכפתור למציאת המקלט הקרוב ונווטו אליו מיד</p>
+        <p class="info-banner__inner" id="infoBannerInner"><strong>🚨 בזמן חירום</strong> לחצו על הכפתור למציאת המקלט הקרוב ונווטו אליו מיד</p>
       </div>
 
-      <button type="button" class="main-btn btn-locate" id="locateBtn" disabled onclick="findNearestShelter()" aria-label="מצא מקלט קרוב למיקומך">
+      <button type="button" class="main-btn btn-locate" id="locateBtn" disabled onclick="findNearestShelter()" data-locate-state="loading" aria-label="מצא מקלט קרוב למיקומך">
         טוען נתונים...
       </button>
 
@@ -1065,13 +1172,13 @@
       <!-- Map Section -->
       <div class="map-container" id="mapBlock">
         <div class="map-header">
-          <span class="map-title">🗺️ מפת מקלטים</span>
-          <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMapExpand()">הגדל מפה</button>
+          <span class="map-title" id="mapHeading">🗺️ מפת מקלטים</span>
+          <button type="button" class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMapExpand()">הגדל מפה</button>
         </div>
 
         <button type="button" class="map-locate-top" id="mapLocateTopBtn" onclick="locateOnMap()" aria-label="הצג את המיקום שלי על המפה">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-          <span>הצג את המיקום שלי על המפה</span>
+          <span id="mapLocateTopLabel">הצג את המיקום שלי על המפה</span>
         </button>
 
         <div class="map-section" id="mapSection">
@@ -1080,11 +1187,11 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
           </button>
         </div>
-        <p class="map-hint">לחצו על מקלט במפה לקבלת אפשרויות ניווט</p>
+        <p class="map-hint" id="mapHintText">לחצו על מקלט במפה לקבלת אפשרויות ניווט</p>
 
         <div class="map-nearest-nav" id="mapNearestNav" hidden role="region" aria-label="ניווט למקלט הקרוב">
           <div class="map-nearest-nav-head">
-            <div class="map-nearest-nav-title">ניווט למקלט הקרוב ביותר</div>
+            <div class="map-nearest-nav-title" id="mapNearestTitleEl">ניווט למקלט הקרוב ביותר</div>
             <div class="map-nearest-nav-dist" id="mapNearestDist" aria-live="polite"></div>
           </div>
           <div class="nav-buttons" id="mapNearestNavButtons"></div>
@@ -1096,10 +1203,10 @@
     </main>
 
     <!-- === LEGAL SECTIONS === -->
-    <nav aria-label="מידע משפטי">
+    <nav id="legalNav" aria-label="מידע משפטי">
       <div class="legal-section" id="termsSection">
-        <button class="legal-toggle" onclick="toggleLegal('terms')" aria-expanded="false" aria-controls="termsPanel">
-          <span>תנאי שימוש והצהרת אחריות</span>
+        <button type="button" class="legal-toggle" onclick="toggleLegal('terms')" aria-expanded="false" aria-controls="termsPanel">
+          <span id="termsToggleLabel">תנאי שימוש והצהרת אחריות</span>
           <span class="arrow">◀</span>
         </button>
         <div class="legal-panel" id="termsPanel" role="region" aria-label="תנאי שימוש">
@@ -1121,8 +1228,8 @@
       </div>
 
       <div class="legal-section" id="privacySection">
-        <button class="legal-toggle" onclick="toggleLegal('privacy')" aria-expanded="false" aria-controls="privacyPanel">
-          <span>מדיניות פרטיות</span>
+        <button type="button" class="legal-toggle" onclick="toggleLegal('privacy')" aria-expanded="false" aria-controls="privacyPanel">
+          <span id="privacyToggleLabel">מדיניות פרטיות</span>
           <span class="arrow">◀</span>
         </button>
         <div class="legal-panel" id="privacyPanel" role="region" aria-label="מדיניות פרטיות">
@@ -1138,8 +1245,8 @@
       </div>
 
       <div class="legal-section" id="a11ySection">
-        <button class="legal-toggle" onclick="toggleLegal('a11y')" aria-expanded="false" aria-controls="a11yPanel">
-          <span>הצהרת נגישות</span>
+        <button type="button" class="legal-toggle" onclick="toggleLegal('a11y')" aria-expanded="false" aria-controls="a11yPanel">
+          <span id="a11yToggleLabel">הצהרת נגישות</span>
           <span class="arrow">◀</span>
         </button>
         <div class="legal-panel" id="a11yPanel" role="region" aria-label="הצהרת נגישות">
@@ -1157,20 +1264,21 @@
     </nav>
 
     <footer role="contentinfo">
-      נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> — פורטל המפות הממשלתי | רישיון CC-BY<br>
-      מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br>
+      <div id="footerMapBlock">נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> — פורטל המפות הממשלתי | רישיון CC-BY<br>
+      מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br></div>
       <span id="shelterCount"></span><br>
-      <span style="font-size:11px; opacity:0.7; display:block; margin-top:8px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
+      <span id="footerDisclaimer" style="font-size:11px; opacity:0.7; display:block; margin-top:8px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
       <div class="footer-links">
-        <button onclick="toggleLegal('terms')">תנאי שימוש</button>
-        <button onclick="toggleLegal('privacy')">מדיניות פרטיות</button>
-        <button onclick="toggleLegal('a11y')">נגישות</button>
+        <button type="button" onclick="toggleLegal('terms')" id="footerBtnTerms">תנאי שימוש</button>
+        <button type="button" onclick="toggleLegal('privacy')" id="footerBtnPrivacy">מדיניות פרטיות</button>
+        <button type="button" onclick="toggleLegal('a11y')" id="footerBtnA11y">נגישות</button>
       </div>
     </footer>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="i18n.js"></script>
   <script>
     let shelters = [];
     let userLat = null, userLng = null;
@@ -1178,6 +1286,189 @@
     let clusterGroup = null;
     let userMarker = null;
     let mapExpanded = false;
+    let uiLang = 'he';
+
+    function i18nPack() {
+      return window.MIKLAT_I18N;
+    }
+
+    function t(k) {
+      const p = i18nPack();
+      if (!p) return k;
+      return (p[uiLang] && p[uiLang][k]) || (p.he && p.he[k]) || k;
+    }
+
+    function localeTag() {
+      return uiLang === 'he' ? 'he-IL' : uiLang === 'ru' ? 'ru-RU' : 'en-US';
+    }
+
+    function applyLegalPanels() {
+      document.getElementById('termsPanel').innerHTML = t('legalTermsHtml');
+      document.getElementById('privacyPanel').innerHTML = t('legalPrivacyHtml');
+      document.getElementById('a11yPanel').innerHTML = t('legalA11yHtml');
+    }
+
+    function applyStaticI18n() {
+      document.getElementById('skipLink').textContent = t('skipLink');
+      document.getElementById('installTitle').textContent = t('installTitle');
+      document.getElementById('installSub').textContent = t('installSub');
+      document.getElementById('installBtn').textContent = t('installBtn');
+      document.getElementById('installClose').setAttribute('aria-label', t('installCloseAria'));
+      document.getElementById('iosModalTitle').textContent = t('iosTitle');
+      document.getElementById('iosModalLead').textContent = t('iosLead');
+      document.getElementById('iosStep1').innerHTML = t('iosStep1');
+      document.getElementById('iosStep2').innerHTML = t('iosStep2');
+      document.getElementById('iosStep3').innerHTML = t('iosStep3');
+      document.getElementById('iosStep4').innerHTML = t('iosStep4');
+      document.getElementById('iosCloseBtn').textContent = t('iosGotIt');
+      document.getElementById('mainHeading').textContent = t('h1');
+      document.getElementById('mainSubtitle').textContent = t('subtitle');
+      document.getElementById('langBar').setAttribute('aria-label', t('langSwitcher'));
+      document.getElementById('langBarLabel').textContent = t('langSwitcher');
+      document.querySelector('.lang-btn[data-lang="he"]').textContent = t('langHe');
+      document.querySelector('.lang-btn[data-lang="en"]').textContent = t('langEn');
+      document.querySelector('.lang-btn[data-lang="ru"]').textContent = t('langRu');
+      document.getElementById('infoBannerInner').innerHTML = t('infoBannerHtml');
+      document.getElementById('mapHeading').textContent = t('mapTitle');
+      document.getElementById('mapHintText').textContent = t('mapHint');
+      document.getElementById('mapNearestTitleEl').textContent = t('mapNearestTitle');
+      document.getElementById('mapNearestNav').setAttribute('aria-label', t('mapNearestAria'));
+      document.getElementById('results').setAttribute('aria-label', t('mapNearestRegion'));
+      document.getElementById('legalNav').setAttribute('aria-label', t('legalNav'));
+      document.getElementById('termsToggleLabel').textContent = t('legalTermsBtn');
+      document.getElementById('privacyToggleLabel').textContent = t('legalPrivacyBtn');
+      document.getElementById('a11yToggleLabel').textContent = t('legalA11yBtn');
+      document.getElementById('termsPanel').setAttribute('aria-label', t('termsPanelAria'));
+      document.getElementById('privacyPanel').setAttribute('aria-label', t('privacyPanelAria'));
+      document.getElementById('a11yPanel').setAttribute('aria-label', t('a11yPanelAria'));
+      document.getElementById('footerMapBlock').innerHTML = t('footerMapHtml');
+      document.getElementById('footerDisclaimer').textContent = t('footerDisclaimer');
+      document.getElementById('footerBtnTerms').textContent = t('footerTerms');
+      document.getElementById('footerBtnPrivacy').textContent = t('footerPrivacy');
+      document.getElementById('footerBtnA11y').textContent = t('footerA11y');
+      document.getElementById('locateBtn').setAttribute('aria-label', t('locateAria'));
+      document.getElementById('mapLocateTopBtn').setAttribute('aria-label', t('mapLocateTopAria'));
+      document.getElementById('map').setAttribute('aria-label', t('mapAria'));
+      document.getElementById('mapLocateBtn').setAttribute('aria-label', t('mapLocateFloatAria'));
+      const topLbl = document.getElementById('mapLocateTopLabel');
+      if (topLbl) topLbl.textContent = t('mapLocateTop');
+      syncMapToggleLabel();
+      syncLocateButtonLabel();
+      updateOfflineBanner();
+      const dot = document.getElementById('statusDot');
+      if (dot && !dot.classList.contains('active') && !dot.classList.contains('error')) {
+        document.getElementById('statusText').textContent = t('statusLoading');
+      }
+    }
+
+    function syncMapToggleLabel() {
+      const btn = document.getElementById('mapToggleBtn');
+      if (!btn) return;
+      btn.textContent = mapExpanded ? t('mapShrink') : t('mapExpand');
+    }
+
+    function updateOfflineBanner() {
+      const wrap = document.getElementById('offlineBanner');
+      const inner = document.getElementById('offlineBannerInner');
+      if (!wrap || !inner) return;
+      if (navigator.onLine) {
+        wrap.hidden = true;
+        return;
+      }
+      inner.innerHTML = t('offlineBannerHtml');
+      wrap.hidden = false;
+    }
+
+    function syncLocateButtonLabel() {
+      const btn = document.getElementById('locateBtn');
+      if (!btn) return;
+      const st = btn.getAttribute('data-locate-state');
+      if (st === 'loading') {
+        btn.textContent = t('locateLoadingBtn');
+      } else if (st === 'again') {
+        btn.textContent = '🔄 ' + t('locateAgain');
+      } else {
+        btn.textContent = '📍 ' + t('locateReady');
+      }
+    }
+
+    function resetMapLocateTopStyles() {
+      const topBtn = document.getElementById('mapLocateTopBtn');
+      topBtn.style.borderColor = '';
+      topBtn.style.color = '';
+      topBtn.style.background = '';
+      document.getElementById('mapLocateTopLabel').textContent = t('mapLocateTop');
+    }
+
+    function setLang(lang, opts) {
+      if (!i18nPack() || (lang !== 'he' && lang !== 'en' && lang !== 'ru')) return;
+      uiLang = lang;
+      if (!opts || !opts.skipStorage) {
+        try { localStorage.setItem('miklatLang', lang); } catch (e) {}
+      }
+      const meta = i18nPack()[lang];
+      document.documentElement.lang = meta.htmlLang;
+      document.documentElement.dir = meta.dir;
+      document.title = t('pageTitle');
+      document.querySelectorAll('.lang-btn').forEach(function (b) {
+        const on = b.getAttribute('data-lang') === lang;
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.classList.toggle('lang-btn--active', on);
+      });
+      applyStaticI18n();
+      applyLegalPanels();
+      resetMapLocateTopStyles();
+      if (!opts || !opts.skipUrl) {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          params.set('lang', lang);
+          const next = window.location.pathname + '?' + params.toString() + window.location.hash;
+          window.history.replaceState(null, '', next);
+        } catch (e) {}
+      }
+      if (map) map.closePopup();
+      if (userLat !== null && shelters.length) {
+        displayResults();
+        updateUserOnMap();
+        updateMapNearestNav();
+      }
+      const st = document.getElementById('statusDot');
+      if (st && st.classList.contains('active') && shelters.length) {
+        document.getElementById('statusText').textContent =
+          shelters.length.toLocaleString(localeTag()) + ' ' + t('statusAvailable');
+      }
+      if (st && st.classList.contains('error')) {
+        document.getElementById('statusText').textContent =
+          navigator.onLine ? t('statusError') : t('statusErrorOffline');
+      }
+      if (shelters.length) {
+        document.getElementById('shelterCount').textContent =
+          shelters.length.toLocaleString(localeTag()) + ' ' + t('shelterMapped');
+      }
+    }
+
+    function initMiklatLang() {
+      const q = new URLSearchParams(window.location.search).get('lang');
+      if (q === 'en' || q === 'ru' || q === 'he') {
+        setLang(q, { skipStorage: true, skipUrl: true });
+        try { localStorage.setItem('miklatLang', q); } catch (e) {}
+        return;
+      }
+      try {
+        const s = localStorage.getItem('miklatLang');
+        if (s === 'en' || s === 'ru' || s === 'he') {
+          setLang(s, { skipStorage: true, skipUrl: true });
+          return;
+        }
+      } catch (e) {}
+      setLang('he', { skipStorage: true, skipUrl: true });
+    }
+
+    document.getElementById('langBar').addEventListener('click', function (e) {
+      const b = e.target.closest('.lang-btn');
+      if (!b) return;
+      setLang(b.getAttribute('data-lang'));
+    });
 
     /** iPhone / iPad — לניווט: בלי target=_blank כדי ש-Universal Links יפתחו את האפליקציות */
     function isIos() {
@@ -1295,25 +1586,25 @@
       if (userLat !== null) {
         const dist = haversineDistance(userLat, userLng, lat, lng);
         const d = formatDistance(dist);
-        distHtml = '<div class="popup-distance">מרחק: <strong>' + d.value + ' ' + d.unit + '</strong></div>';
+        distHtml = '<div class="popup-distance">' + t('popupDistHtml').replace('{v}', d.value).replace('{u}', d.unit) + '</div>';
       }
 
       let appleRow = '';
       if (nav.showApple) {
         appleRow =
           '<a href="' + nav.apple + '"' + tAttr + ' class="popup-apple">' +
-          APPLE_MAPS_LOGO_SVG + '<span>מפות Apple (מומלץ באייפון)</span></a>';
+          APPLE_MAPS_LOGO_SVG + '<span>' + t('popupApple') + '</span></a>';
       }
 
       marker.unbindPopup();
       marker.bindPopup(
-        '<div class="popup-title">מקלט ציבורי</div>' +
+        '<div class="popup-title">' + t('popupTitle') + '</div>' +
         distHtml +
         '<div class="popup-nav">' +
           '<a href="' + nav.waze + '"' + tAttr + ' class="popup-waze">' +
-            WAZE_LOGO_SVG + '<span>ניווט ב־Waze</span></a>' +
+            WAZE_LOGO_SVG + '<span>' + t('popupWaze') + '</span></a>' +
           '<a href="' + nav.gmaps + '"' + tAttr + ' class="popup-gmaps">' +
-            GMAPS_LOGO_SVG + '<span>Google Maps</span></a>' +
+            GMAPS_LOGO_SVG + '<span>' + t('popupGmaps') + '</span></a>' +
           appleRow +
         '</div>',
         { closeButton: true, maxWidth: 300, minWidth: 240 }
@@ -1324,9 +1615,10 @@
 
       if (userMarker) {
         userMarker.setLatLng([userLat, userLng]);
+        userMarker.setPopupContent('<div style="text-align:center;font-family:Rubik,Heebo,Noto Sans,sans-serif;font-weight:700;font-size:15px;">' + t('userLocation') + '</div>');
       } else {
         userMarker = L.marker([userLat, userLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
-        userMarker.bindPopup('<div style="text-align:center;font-family:Rubik,Heebo,sans-serif;font-weight:700;font-size:15px;">המיקום שלך</div>', {
+        userMarker.bindPopup('<div style="text-align:center;font-family:Rubik,Heebo,Noto Sans,sans-serif;font-weight:700;font-size:15px;">' + t('userLocation') + '</div>', {
           closeButton: false, maxWidth: 160,
         });
       }
@@ -1341,11 +1633,11 @@
       const topBtn = document.getElementById('mapLocateTopBtn');
 
       floatBtn.innerHTML = '<span class="spinner-sm"></span>';
-      topBtn.innerHTML = '<span class="spinner-sm"></span> <span>מאתר מיקום...</span>';
+      topBtn.innerHTML = '<span class="spinner-sm"></span> <span>' + t('geoSearching') + '</span>';
 
       const resetBtns = () => {
         floatBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>';
-        topBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>הצג את המיקום שלי על המפה</span>';
+        topBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>' + t('mapLocateTop') + '</span>';
       };
 
       navigator.geolocation.getCurrentPosition(
@@ -1355,14 +1647,14 @@
           updateUserOnMap();
           updateMapNearestNav();
           resetBtns();
-          topBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>✓ המיקום שלי מוצג — לחצו שוב לרענון</span>';
+          topBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg><span>' + t('geoShown') + '</span>';
           topBtn.style.borderColor = 'rgba(16, 185, 129, 0.3)';
           topBtn.style.color = '#10b981';
           topBtn.style.background = 'rgba(16, 185, 129, 0.05)';
         },
         (err) => {
           resetBtns();
-          topBtn.innerHTML = '<span>⚠️ לא הצלחנו לאתר — אנא אשרו הרשאת מיקום</span>';
+          topBtn.innerHTML = '<span>' + t('geoFail') + '</span>';
           topBtn.style.borderColor = 'rgba(239, 68, 68, 0.3)';
           topBtn.style.color = '#ef4444';
           topBtn.style.background = 'rgba(239, 68, 68, 0.05)';
@@ -1383,10 +1675,10 @@
 
       if (mapExpanded) {
         mapEl.style.height = '600px';
-        btn.textContent = 'הקטן מפה';
+        btn.textContent = t('mapShrink');
       } else {
         mapEl.style.height = '350px';
-        btn.textContent = 'הגדל מפה';
+        btn.textContent = t('mapExpand');
       }
 
       setTimeout(() => map.invalidateSize(), 300);
@@ -1394,20 +1686,27 @@
     async function loadShelters() {
       try {
         const resp = await fetch('shelters.json');
+        if (!resp.ok) throw new Error('bad response');
         shelters = await resp.json();
         document.getElementById('statusDot').classList.add('active');
-        document.getElementById('statusText').textContent = `${shelters.length.toLocaleString('he-IL')} מקלטים זמינים`;
-        document.getElementById('shelterCount').textContent = `${shelters.length.toLocaleString('he-IL')} מקלטים ממופים בכל הארץ`;
+        document.getElementById('statusText').textContent =
+          shelters.length.toLocaleString(localeTag()) + ' ' + t('statusAvailable');
+        document.getElementById('shelterCount').textContent =
+          shelters.length.toLocaleString(localeTag()) + ' ' + t('shelterMapped');
         const btn = document.getElementById('locateBtn');
         btn.disabled = false;
-        btn.innerHTML = '📍 מצא מקלט קרוב';
+        btn.setAttribute('data-locate-state', 'ready');
+        syncLocateButtonLabel();
+        updateOfflineBanner();
 
         initMap();
         populateMap();
         if (userLat !== null) updateMapNearestNav();
       } catch (e) {
         document.getElementById('statusDot').classList.add('error');
-        document.getElementById('statusText').textContent = 'שגיאה בטעינת נתונים';
+        document.getElementById('statusText').textContent =
+          navigator.onLine ? t('statusError') : t('statusErrorOffline');
+        updateOfflineBanner();
       }
     }
     function haversineDistance(lat1, lon1, lat2, lon2) {
@@ -1421,8 +1720,8 @@
     }
 
     function formatDistance(meters) {
-      if (meters < 1000) return { value: Math.round(meters), unit: 'מטר' };
-      return { value: (meters / 1000).toFixed(1), unit: 'ק״מ' };
+      if (meters < 1000) return { value: Math.round(meters), unit: t('unitM') };
+      return { value: (meters / 1000).toFixed(1), unit: t('unitKm') };
     }
 
     function getNearestShelter() {
@@ -1454,12 +1753,12 @@
       }
       block.hidden = false;
       const d = formatDistance(nearest.dist);
-      distEl.innerHTML = 'במרחק <strong>' + d.value + ' ' + d.unit + '</strong>';
+      distEl.innerHTML = t('mapNearestDistHtml').replace('{v}', d.value).replace('{u}', d.unit);
       const nav = navigationUrls(nearest.lat, nearest.lng);
       const navTarget = nav.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : ' target="_self" rel="noopener noreferrer"';
       const appleRow = nav.showApple
         ? '<a href="' + nav.apple + '"' + navTarget + ' class="nav-btn nav-apple">' +
-          APPLE_MAPS_LOGO_SVG + '<span>מפות Apple</span></a>'
+          APPLE_MAPS_LOGO_SVG + '<span>' + t('appleMaps') + '</span></a>'
         : '';
       btns.className = nav.showApple ? 'nav-buttons nav-buttons--with-apple' : 'nav-buttons';
       btns.innerHTML =
@@ -1472,9 +1771,9 @@
 
     function estimateWalkingTime(meters) {
       const minutes = Math.ceil(meters / 80);
-      if (minutes < 1) return 'פחות מדקה';
-      if (minutes === 1) return 'דקה אחת';
-      return `${minutes} דקות`;
+      if (minutes < 1) return t('walkLess');
+      if (minutes === 1) return t('walkOne');
+      return t('walkMany').replace('{n}', String(minutes));
     }
 
     function findNearestShelter() {
@@ -1483,12 +1782,14 @@
       errorArea.innerHTML = '';
 
       btn.disabled = true;
-      btn.innerHTML = 'מאתר מיקום... <span class="spinner"></span>';
+      btn.setAttribute('data-locate-state', 'loading');
+      btn.innerHTML = t('locateLoading') + ' <span class="spinner"></span>';
 
       if (!navigator.geolocation) {
-        showError('הדפדפן שלך לא תומך באיתור מיקום');
+        showError(t('errorNoGeo'));
         btn.disabled = false;
-        btn.textContent = '📍 מצא מקלט קרוב';
+        btn.setAttribute('data-locate-state', 'ready');
+        syncLocateButtonLabel();
         return;
       }
 
@@ -1499,17 +1800,19 @@
           displayResults();
           updateUserOnMap();
           btn.disabled = false;
-          btn.textContent = '🔄 חפש שוב';
+          btn.setAttribute('data-locate-state', 'again');
+          syncLocateButtonLabel();
           document.getElementById('mapBlock').scrollIntoView({ behavior: 'smooth', block: 'start' });
         },
         (err) => {
-          let msg = 'לא הצלחנו לאתר את המיקום שלך.';
-          if (err.code === 1) msg = 'נדרשת הרשאת מיקום. אנא אשרו גישה למיקום בדפדפן ונסו שוב.';
-          else if (err.code === 2) msg = 'לא ניתן לקבוע מיקום כרגע. נסו שוב.';
-          else if (err.code === 3) msg = 'זמן האיתור פג. נסו שוב.';
+          let msg = t('errGeneric');
+          if (err.code === 1) msg = t('errDenied');
+          else if (err.code === 2) msg = t('errPos');
+          else if (err.code === 3) msg = t('errTimeout');
           showError(msg);
           btn.disabled = false;
-          btn.textContent = '📍 מצא מקלט קרוב';
+          btn.setAttribute('data-locate-state', 'ready');
+          syncLocateButtonLabel();
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
       );
@@ -1531,8 +1834,8 @@
       const container = document.getElementById('results');
       container.innerHTML = `
         <div class="results-header">
-          <span class="results-title">🏛️ מקלטים קרובים</span>
-          <span class="results-count">5 הקרובים ביותר</span>
+          <span class="results-title">${t('resultsTitle')}</span>
+          <span class="results-count">${t('resultsCount')}</span>
         </div>
       `;
 
@@ -1542,7 +1845,7 @@
         const nav = navigationUrls(s.lat, s.lng);
         const navTarget = nav.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : ' target="_self" rel="noopener noreferrer"';
         const appleRow = nav.showApple
-          ? `<a href="${nav.apple}"${navTarget} class="nav-btn nav-apple">${APPLE_MAPS_LOGO_SVG}<span>מפות Apple</span></a>`
+          ? `<a href="${nav.apple}"${navTarget} class="nav-btn nav-apple">${APPLE_MAPS_LOGO_SVG}<span>${t('appleMaps')}</span></a>`
           : '';
         const navGridClass = nav.showApple ? 'nav-buttons nav-buttons--with-apple' : 'nav-buttons';
         const isNearest = i === 0;
@@ -1550,7 +1853,7 @@
         const card = document.createElement('div');
         card.className = `shelter-card${isNearest ? ' nearest' : ''}`;
         card.innerHTML = `
-          ${isNearest ? '<span class="nearest-badge">הקרוב ביותר</span>' : ''}
+          ${isNearest ? '<span class="nearest-badge">' + t('nearestBadge') + '</span>' : ''}
           <div class="shelter-top">
             <div class="shelter-distance">
               <span class="distance-value">${d.value}</span>
@@ -1560,7 +1863,7 @@
           </div>
           <div class="walking-time">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
-            <span>כ-${walkTime} הליכה</span>
+            <span>${t('walkCard').replace('{t}', walkTime)}</span>
           </div>
           <div class="shelter-coords">${s.lat.toFixed(6)}, ${s.lng.toFixed(6)}</div>
           <div class="${navGridClass}">
@@ -1681,6 +1984,10 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
+    initMiklatLang();
+    window.addEventListener('online', updateOfflineBanner);
+    window.addEventListener('offline', updateOfflineBanner);
+    updateOfflineBanner();
     loadShelters();
   </script>
 </body>
