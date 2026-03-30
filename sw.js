@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miklat-v5';
+const CACHE_NAME = 'miklat-v9';
 const ASSETS = [
   '/',
   '/index.html',
@@ -27,14 +27,47 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
+function isCacheableGetRequest(request) {
+  if (request.method !== 'GET') return false;
+  const u = new URL(request.url);
+  return u.protocol === 'http:' || u.protocol === 'https:';
+}
+
 self.addEventListener('fetch', (e) => {
+  const url = new URL(e.request.url);
+  if (url.pathname.endsWith('/presence-config.json')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
+
+  // Do not intercept cross-origin (GoatCounter, CDNs, etc.). Let the browser fetch directly so
+  // blocked or failed third-party scripts do not resolve FetchEvent with Response.error() in the SW.
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // Same-origin only below.
+
+  if (!isCacheableGetRequest(e.request)) {
+    e.respondWith(
+      fetch(e.request).catch(() => Response.error())
+    );
+    return;
+  }
+
   e.respondWith(
     fetch(e.request)
       .then((resp) => {
-        const clone = resp.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        if (resp.status === 200) {
+          const clone = resp.clone();
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(e.request, clone).catch(() => {}));
+        }
         return resp;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() =>
+        caches.match(e.request).then((cached) => cached || Response.error())
+      )
   );
 });

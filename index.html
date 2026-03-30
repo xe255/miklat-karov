@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -42,6 +42,7 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="מקלט קרוב">
   <link rel="icon" href="logo.png" type="image/png" sizes="any">
@@ -269,9 +270,10 @@
     .status-bar {
       direction: ltr;
       display: inline-flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 10px 14px;
       padding: 10px 20px;
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -281,6 +283,50 @@
       font-weight: 600;
       color: var(--text-muted);
       box-shadow: var(--shadow-sm);
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .status-bar__sep {
+      color: var(--border);
+      font-weight: 400;
+      user-select: none;
+    }
+
+    .live-visitors {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    .live-visitors__pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+      animation: livePulse 2s ease-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes livePulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .live-visitors__label {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .live-visitors__count {
+      font-weight: 800;
+      color: var(--success);
+      font-variant-numeric: tabular-nums;
+      min-width: 1.25em;
+      text-align: center;
     }
 
     .status-dot {
@@ -1178,6 +1224,8 @@
     .popup-detail-val {
       color: var(--text-muted);
       font-weight: 500;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .brand-nav-icon {
       flex-shrink: 0;
@@ -1444,6 +1492,12 @@
     <div class="status-bar" id="statusBar" role="status" aria-live="polite">
       <span class="status-dot" id="statusDot" aria-hidden="true"></span>
       <span id="statusText">טוען נתוני מקלטים...</span>
+      <span class="status-bar__sep" id="liveVisitorsSep" hidden aria-hidden="true">|</span>
+      <span class="live-visitors" id="liveVisitorsWrap" hidden>
+        <span class="live-visitors__pulse" aria-hidden="true"></span>
+        <span class="live-visitors__label" id="liveVisitorsLabel"></span>
+        <strong class="live-visitors__count" id="liveVisitorsCount">—</strong>
+      </span>
     </div>
 
     <main id="main-content" aria-busy="true">
@@ -1640,7 +1694,7 @@
           "@type": "Person",
           "name": "מקלט קרוב"
         },
-        "dateModified": "2026-03-23",
+        "dateModified": "2026-03-30",
         "license": "https://opensource.org/licenses/MIT"
       },
       {
@@ -1712,6 +1766,7 @@
   }
   </script>
 
+  <!-- ספירת מבקרים חיה: presence-config.json. ברירת מחדל: privateChannel false (Realtime עם Allow public access). לערוץ פרטי + RLS: הריצו supabase/presence-rls.sql והגדירו privateChannel true. -->
   <script data-goatcounter="https://miklat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -1723,6 +1778,9 @@
     let clusterGroup = null;
     let userMarker = null;
     let mapExpanded = false;
+    let mapGrownForShelterPopup = false;
+    let shelterPopupCloseResetTimer = null;
+    let livePresenceState = null;
     let uiLang = 'he';
     let shareFeedbackTimer = null;
 
@@ -1835,6 +1893,311 @@
       document.getElementById('a11yPanel').innerHTML = t('legalA11yHtml');
     }
 
+    function syncLiveVisitorsI18n() {
+      const label = document.getElementById('liveVisitorsLabel');
+      const wrap = document.getElementById('liveVisitorsWrap');
+      if (!label || !wrap || wrap.hidden) return;
+      label.textContent = t('liveVisitorsLabel');
+    }
+
+    function presenceStateCount(state) {
+      if (!state || typeof state !== 'object') return 0;
+      let n = 0;
+      for (const k in state) {
+        if (!Object.prototype.hasOwnProperty.call(state, k)) continue;
+        const v = state[k];
+        if (Array.isArray(v)) {
+          n += v.length;
+        } else if (v && typeof v === 'object' && Array.isArray(v.metas)) {
+          n += v.metas.length;
+        } else if (v) {
+          n += 1;
+        }
+      }
+      return n;
+    }
+
+    function refreshLivePresenceCount(channel, countEl) {
+      if (!channel || !countEl) return;
+      let n = 0;
+      try {
+        n = presenceStateCount(channel.presenceState());
+      } catch (e) {}
+      var floor = livePresenceState && livePresenceState.presenceFloor;
+      if (typeof floor === 'number' && floor > 0) {
+        n = Math.max(n, floor);
+      }
+      countEl.textContent = String(n);
+      countEl.setAttribute('aria-label', t('liveVisitorsAria').replace('{n}', String(n)));
+    }
+
+    async function loadPresenceUiConfig() {
+      if (
+        window.MIKLAT_PRESENCE &&
+        window.MIKLAT_PRESENCE.supabaseUrl &&
+        window.MIKLAT_PRESENCE.supabaseAnonKey
+      ) {
+        var w = window.MIKLAT_PRESENCE;
+        var ch =
+          (w.channelName && String(w.channelName).trim()) ||
+          (w.topic && String(w.topic).trim()) ||
+          'miklat-site-live';
+        return {
+          supabaseUrl: String(w.supabaseUrl).trim(),
+          supabaseAnonKey: String(w.supabaseAnonKey).trim(),
+          channelName: ch,
+          signInAnonymously: w.signInAnonymously !== false,
+          privateChannel: w.privateChannel !== false,
+        };
+      }
+      try {
+        const r = await fetch('presence-config.json', { cache: 'no-store' });
+        if (!r.ok) return null;
+        const j = await r.json();
+        if (!j || !String(j.supabaseUrl || '').trim() || !String(j.supabaseAnonKey || '').trim()) return null;
+        var ch =
+          (j.channelName && String(j.channelName).trim()) ||
+          (j.topic && String(j.topic).trim()) ||
+          'miklat-site-live';
+        return {
+          supabaseUrl: String(j.supabaseUrl).trim(),
+          supabaseAnonKey: String(j.supabaseAnonKey).trim(),
+          channelName: ch,
+          signInAnonymously: j.signInAnonymously !== false,
+          privateChannel: j.privateChannel !== false,
+        };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function teardownLivePresence() {
+      const st = livePresenceState;
+      livePresenceState = null;
+      if (!st) return;
+      if (st.timers) {
+        try {
+          if (st.timers.raf != null) {
+            cancelAnimationFrame(st.timers.raf);
+            st.timers.raf = null;
+          }
+          if (st.timers.stuck) clearTimeout(st.timers.stuck);
+          if (st.timers.poll) clearInterval(st.timers.poll);
+        } catch (e) {}
+      }
+      if (st.onPresenceVisibility) {
+        try {
+          document.removeEventListener('visibilitychange', st.onPresenceVisibility);
+        } catch (e) {}
+      }
+      try {
+        await st.channel.untrack();
+      } catch (e) {}
+      try {
+        st.supabase.removeChannel(st.channel);
+      } catch (e) {}
+    }
+
+    async function initLivePresence() {
+      const wrap = document.getElementById('liveVisitorsWrap');
+      const sep = document.getElementById('liveVisitorsSep');
+      const countEl = document.getElementById('liveVisitorsCount');
+      if (!wrap || !sep || !countEl) return;
+
+      const cfg = await loadPresenceUiConfig();
+      if (!cfg) return;
+
+      wrap.hidden = false;
+      sep.hidden = false;
+      syncLiveVisitorsI18n();
+      countEl.textContent = '';
+      countEl.setAttribute('aria-label', t('liveVisitorsAriaLoading'));
+
+      try {
+        const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/+esm');
+        const createClient = mod.createClient || (mod.default && mod.default.createClient);
+        if (typeof createClient !== 'function') throw new Error('createClient missing');
+        const supabase = createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+          auth: {
+            persistSession: true,
+            storage: typeof window !== 'undefined' ? window.sessionStorage : undefined,
+            autoRefreshToken: true,
+          },
+        });
+
+        if (cfg.signInAnonymously) {
+          const { error: authErr } = await supabase.auth.signInAnonymously();
+          if (authErr) console.warn('miklat live presence: anonymous auth', authErr);
+        }
+
+        var presenceToken = null;
+        for (var si = 0; si < 10; si++) {
+          var sess = await supabase.auth.getSession();
+          presenceToken = sess.data && sess.data.session && sess.data.session.access_token;
+          if (presenceToken) break;
+          await new Promise(function (r) {
+            setTimeout(r, 100);
+          });
+        }
+        if (presenceToken) {
+          try {
+            await supabase.auth.refreshSession();
+            var sess2 = await supabase.auth.getSession();
+            if (sess2.data && sess2.data.session && sess2.data.session.access_token) {
+              presenceToken = sess2.data.session.access_token;
+            }
+          } catch (re) {}
+          if (typeof supabase.realtime.setAuth === 'function') {
+            supabase.realtime.setAuth(presenceToken);
+          }
+        } else {
+          console.warn('miklat live presence: no session JWT — enable Anonymous sign-in in Supabase (Authentication → Providers)');
+        }
+
+        // Unique per page load (not sessionStorage): Chrome "Duplicate tab" copies sessionStorage,
+        // so a shared sid made every duplicate tab count as one presence. Random per load gives
+        // each tab its own key; pagehide teardown untracks so refresh does not pile up forever.
+        var sid =
+          typeof crypto !== 'undefined' && crypto.randomUUID
+            ? crypto.randomUUID()
+            : 't' + Date.now() + Math.random().toString(36).slice(2);
+
+        var usePrivate = cfg.privateChannel !== false;
+        try {
+          if (typeof supabase.realtime.connect === 'function') {
+            supabase.realtime.connect();
+          }
+        } catch (e) {}
+
+        const channel = supabase.channel(cfg.channelName, {
+          config: {
+            private: usePrivate,
+            presence: { key: sid },
+          },
+        });
+
+        var presenceSubscribed = false;
+        var liveTimers = { stuck: null, raf: null, poll: null };
+
+        liveTimers.stuck = setTimeout(function () {
+          if (!presenceSubscribed) {
+            countEl.textContent = '—';
+            countEl.setAttribute('aria-label', t('liveVisitorsAriaUnavailable'));
+          }
+        }, 8000);
+
+        function flushLivePresenceUi() {
+          if (liveTimers.raf != null) {
+            cancelAnimationFrame(liveTimers.raf);
+            liveTimers.raf = null;
+          }
+          if (liveTimers.stuck) {
+            clearTimeout(liveTimers.stuck);
+            liveTimers.stuck = null;
+          }
+          refreshLivePresenceCount(channel, countEl);
+        }
+
+        function debouncedLivePresenceUi() {
+          if (liveTimers.raf != null) return;
+          liveTimers.raf = requestAnimationFrame(function () {
+            liveTimers.raf = null;
+            flushLivePresenceUi();
+          });
+        }
+
+        channel.on('presence', { event: 'sync' }, function () {
+          debouncedLivePresenceUi();
+        });
+        channel.on('presence', { event: 'join' }, function () {
+          debouncedLivePresenceUi();
+        });
+        channel.on('presence', { event: 'leave' }, function () {
+          debouncedLivePresenceUi();
+        });
+
+        function failLivePresenceUi(msg) {
+          presenceSubscribed = true;
+          if (liveTimers.raf != null) {
+            cancelAnimationFrame(liveTimers.raf);
+            liveTimers.raf = null;
+          }
+          if (liveTimers.stuck) {
+            clearTimeout(liveTimers.stuck);
+            liveTimers.stuck = null;
+          }
+          if (liveTimers.poll) {
+            clearInterval(liveTimers.poll);
+            liveTimers.poll = null;
+          }
+          try {
+            document.removeEventListener('visibilitychange', onPresenceVisibility);
+          } catch (e) {}
+          countEl.textContent = '—';
+          countEl.setAttribute('aria-label', t('liveVisitorsAriaUnavailable'));
+          if (msg) console.warn('miklat live presence:', msg);
+        }
+
+        livePresenceState = {
+          supabase,
+          channel,
+          timers: liveTimers,
+          onPresenceVisibility: null,
+          presenceFloor: 0,
+        };
+
+        channel.subscribe(async function (status, subErr) {
+          if (subErr) {
+            failLivePresenceUi(subErr.message || String(subErr));
+            return;
+          }
+          if (status === 'SUBSCRIBED') {
+            presenceSubscribed = true;
+            var trackResult = await channel.track({ online_at: new Date().toISOString() });
+            if (trackResult !== 'ok') {
+              console.warn('miklat live presence: track', trackResult);
+            } else {
+              livePresenceState.presenceFloor = 1;
+            }
+            flushLivePresenceUi();
+            requestAnimationFrame(function () {
+              flushLivePresenceUi();
+            });
+            setTimeout(function () {
+              flushLivePresenceUi();
+            }, 80);
+            setTimeout(function () {
+              flushLivePresenceUi();
+            }, 400);
+          } else if (
+            status === 'CHANNEL_ERROR' ||
+            status === 'TIMED_OUT' ||
+            status === 'CLOSED'
+          ) {
+            failLivePresenceUi('subscribe status: ' + status);
+          }
+        });
+
+        liveTimers.poll = setInterval(function () {
+          if (document.visibilityState === 'visible') flushLivePresenceUi();
+        }, 25000);
+
+        function onPresenceVisibility() {
+          if (document.visibilityState === 'visible') flushLivePresenceUi();
+        }
+        document.addEventListener('visibilitychange', onPresenceVisibility);
+        livePresenceState.onPresenceVisibility = onPresenceVisibility;
+      } catch (e) {
+        console.warn('miklat live presence:', e);
+        wrap.hidden = true;
+        sep.hidden = true;
+      }
+    }
+
+    window.addEventListener('pagehide', function () {
+      teardownLivePresence();
+    });
+
     function applyStaticI18n() {
       document.getElementById('skipLink').textContent = t('skipLink');
       document.getElementById('installTitle').textContent = t('installTitle');
@@ -1894,6 +2257,7 @@
         loadBar.setAttribute('aria-label', t('loadProgressAria'));
         loadBar.setAttribute('aria-valuetext', t('loadProgressHint'));
       }
+      syncLiveVisitorsI18n();
     }
 
     function syncMapToggleLabel() {
@@ -2121,6 +2485,66 @@
       });
 
       map.addLayer(clusterGroup);
+
+      map.on('popupopen', function (e) {
+        var src = e.popup._source;
+        if (!src || src === userMarker || typeof src.shelterLat !== 'number') return;
+        if (shelterPopupCloseResetTimer) {
+          clearTimeout(shelterPopupCloseResetTimer);
+          shelterPopupCloseResetTimer = null;
+        }
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            growMapForShelterPopupIfNeeded(e.popup);
+          });
+        });
+      });
+      map.on('popupclose', function (e) {
+        var src = e.popup._source;
+        if (!src || typeof src.shelterLat !== 'number') return;
+        if (shelterPopupCloseResetTimer) clearTimeout(shelterPopupCloseResetTimer);
+        shelterPopupCloseResetTimer = setTimeout(function () {
+          shelterPopupCloseResetTimer = null;
+          resetMapHeightAfterShelterPopup();
+        }, 0);
+      });
+    }
+
+    function mapBaseHeightPx() {
+      return mapExpanded ? 600 : 350;
+    }
+
+    function growMapForShelterPopupIfNeeded(popup) {
+      if (!map || !popup) return;
+      var mapEl = document.getElementById('map');
+      if (!mapEl) return;
+      var maxH = Math.min(Math.round(window.innerHeight * 0.92), 1200);
+      var pad = 20;
+      for (var i = 0; i < 5; i++) {
+        var el = popup.getElement();
+        if (!el) return;
+        var mapRect = mapEl.getBoundingClientRect();
+        var popupRect = el.getBoundingClientRect();
+        var bottomOver = popupRect.bottom - (mapRect.bottom - pad);
+        if (bottomOver <= 0) break;
+        var next = Math.min(mapEl.offsetHeight + Math.ceil(bottomOver), maxH);
+        if (next <= mapEl.offsetHeight) break;
+        mapEl.style.height = next + 'px';
+        mapGrownForShelterPopup = true;
+        map.invalidateSize();
+        popup.update();
+      }
+    }
+
+    function resetMapHeightAfterShelterPopup() {
+      if (!mapGrownForShelterPopup || !map) return;
+      mapGrownForShelterPopup = false;
+      var mapEl = document.getElementById('map');
+      if (!mapEl) return;
+      mapEl.style.height = mapBaseHeightPx() + 'px';
+      requestAnimationFrame(function () {
+        map.invalidateSize();
+      });
     }
 
     function populateMap() {
@@ -2194,7 +2618,14 @@
             GMAPS_LOGO_SVG + '<span>' + t('popupGmaps') + '</span></a>' +
           appleRow +
         '</div>',
-        { closeButton: true, maxWidth: 320, minWidth: 260 }
+        {
+          closeButton: true,
+          maxWidth: 320,
+          minWidth: 260,
+          autoPan: true,
+          autoPanPaddingTopLeft: [16, 56],
+          autoPanPaddingBottomRight: [16, 72],
+        }
       ).openPopup();
     }
     function updateUserOnMap() {
@@ -2259,6 +2690,7 @@
       const mapEl = document.getElementById('map');
       const btn = document.getElementById('mapToggleBtn');
       mapExpanded = !mapExpanded;
+      mapGrownForShelterPopup = false;
 
       if (mapExpanded) {
         mapEl.style.height = '600px';
@@ -2575,7 +3007,14 @@
 
     // Register service worker (required for Android PWA install prompt)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker
+        .register('sw.js', { updateViaCache: 'none' })
+        .then(function (reg) {
+          try {
+            reg.update();
+          } catch (e) {}
+        })
+        .catch(function () {});
     }
 
     initMiklatLang();
@@ -2588,6 +3027,7 @@
     window.addEventListener('online', updateOfflineBanner);
     window.addEventListener('offline', updateOfflineBanner);
     updateOfflineBanner();
+    initLivePresence();
     loadShelters();
   </script>
 </body>

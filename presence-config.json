@@ -1,0 +1,7 @@
+{
+  "supabaseUrl": "https://ubyhqszatprsmnvwrnwx.supabase.co",
+  "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVieWhxc3phdHByc21udndybnd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NjI0MjgsImV4cCI6MjA5MDQzODQyOH0.01ZRnU1KWvk2YplDCshLSk8yUDY_7UZSA4GaV6-YFR0",
+  "topic": "miklat-site-live",
+  "signInAnonymously": true,
+  "privateChannel": false
+}
