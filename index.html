@@ -1648,7 +1648,7 @@
       <div id="footerMapBlock">נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> (CC-BY) + <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)<br>
       מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br></div>
       <span id="shelterCount"></span><br>
-      <div id="footerBuiltBy" class="footer-built-by">נבנה על ידי <a href="https://www.instagram.com/mdaveid" target="_blank" rel="noopener noreferrer">דוד פדוררו</a></div>
+      <div id="footerBuiltBy" class="footer-built-by">נבנה על ידי <a href="https://www.instagram.com/mdaveid" target="_blank" rel="noopener noreferrer">דוד פדורארו</a></div>
       <span id="footerDisclaimer" style="font-size:11px; opacity:0.7; display:block; margin-top:8px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
       <div class="footer-links">
         <button type="button" onclick="toggleLegal('terms')" id="footerBtnTerms">תנאי שימוש</button>
@@ -1791,7 +1791,28 @@
     let map = null;
     let clusterGroup = null;
     let userMarker = null;
-    let mapExpanded = false;
+    const MAP_HEIGHT_COLLAPSED = 350;
+    const MAP_HEIGHT_EXPANDED = 600;
+
+    function isNarrowMapViewport() {
+      try {
+        return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    let mapExpanded = isNarrowMapViewport();
+
+    function mapBaseHeightPx() {
+      return mapExpanded ? MAP_HEIGHT_EXPANDED : MAP_HEIGHT_COLLAPSED;
+    }
+
+    (function applyInitialMapHeight() {
+      var el = document.getElementById('map');
+      if (el) el.style.height = mapBaseHeightPx() + 'px';
+    })();
+
     let mapGrownForShelterPopup = false;
     let shelterPopupCloseResetTimer = null;
     let mapClosePopupOnClickShelterRestore = null;
@@ -2540,10 +2561,6 @@
       });
     }
 
-    function mapBaseHeightPx() {
-      return mapExpanded ? 600 : 350;
-    }
-
     function shelterPopupMaxMapHeightPx() {
       var h = window.innerHeight;
       if (window.visualViewport && window.visualViewport.height) {
@@ -2733,15 +2750,8 @@
       const btn = document.getElementById('mapToggleBtn');
       mapExpanded = !mapExpanded;
       mapGrownForShelterPopup = false;
-
-      if (mapExpanded) {
-        mapEl.style.height = '600px';
-        btn.textContent = t('mapShrink');
-      } else {
-        mapEl.style.height = '350px';
-        btn.textContent = t('mapExpand');
-      }
-
+      mapEl.style.height = mapBaseHeightPx() + 'px';
+      btn.textContent = mapExpanded ? t('mapShrink') : t('mapExpand');
       setTimeout(() => map.invalidateSize(), 300);
     }
     async function loadShelters() {
