@@ -1055,6 +1055,10 @@
 
     footer a { color: var(--text-main); text-decoration: none; font-weight: 600; }
 
+    .footer-built-by {
+      margin-top: 10px;
+    }
+
     .footer-links {
       direction: ltr;
       display: flex;
@@ -1113,6 +1117,15 @@
       line-height: 1.55 !important;
       font-weight: 500 !important;
       -webkit-font-smoothing: antialiased;
+    }
+    /* Mobile: cap popup height so it stays inside the map/viewport; scroll inside instead of clipping / mis-taps closing it */
+    @media (max-width: 640px) {
+      .leaflet-popup-content {
+        max-height: min(72vh, 520px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
     }
     .leaflet-popup-tip {
       background: var(--bg-surface) !important;
@@ -1635,6 +1648,7 @@
       <div id="footerMapBlock">נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> (CC-BY) + <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)<br>
       מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br></div>
       <span id="shelterCount"></span><br>
+      <div id="footerBuiltBy" class="footer-built-by">נבנה על ידי <a href="https://www.instagram.com/mdaveid" target="_blank" rel="noopener noreferrer">דוד פדוררו</a></div>
       <span id="footerDisclaimer" style="font-size:11px; opacity:0.7; display:block; margin-top:8px;">אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.</span>
       <div class="footer-links">
         <button type="button" onclick="toggleLegal('terms')" id="footerBtnTerms">תנאי שימוש</button>
@@ -1780,6 +1794,7 @@
     let mapExpanded = false;
     let mapGrownForShelterPopup = false;
     let shelterPopupCloseResetTimer = null;
+    let mapClosePopupOnClickShelterRestore = null;
     let livePresenceState = null;
     let uiLang = 'he';
     let shareFeedbackTimer = null;
@@ -2232,6 +2247,8 @@
       document.getElementById('privacyPanel').setAttribute('aria-label', t('privacyPanelAria'));
       document.getElementById('a11yPanel').setAttribute('aria-label', t('a11yPanelAria'));
       document.getElementById('footerMapBlock').innerHTML = t('footerMapHtml');
+      const footerBuiltBy = document.getElementById('footerBuiltBy');
+      if (footerBuiltBy) footerBuiltBy.innerHTML = t('footerBuiltByHtml');
       document.getElementById('footerDisclaimer').textContent = t('footerDisclaimer');
       document.getElementById('footerBtnTerms').textContent = t('footerTerms');
       document.getElementById('footerBtnPrivacy').textContent = t('footerPrivacy');
@@ -2493,15 +2510,28 @@
           clearTimeout(shelterPopupCloseResetTimer);
           shelterPopupCloseResetTimer = null;
         }
-        requestAnimationFrame(function () {
+        if (mapClosePopupOnClickShelterRestore === null) {
+          mapClosePopupOnClickShelterRestore = map.options.closePopupOnClick;
+        }
+        map.options.closePopupOnClick = false;
+        function scheduleGrowShelterPopup() {
           requestAnimationFrame(function () {
-            growMapForShelterPopupIfNeeded(e.popup);
+            requestAnimationFrame(function () {
+              growMapForShelterPopupIfNeeded(e.popup, 0);
+            });
           });
-        });
+        }
+        scheduleGrowShelterPopup();
+        setTimeout(scheduleGrowShelterPopup, 100);
+        setTimeout(scheduleGrowShelterPopup, 280);
       });
       map.on('popupclose', function (e) {
         var src = e.popup._source;
         if (!src || typeof src.shelterLat !== 'number') return;
+        if (mapClosePopupOnClickShelterRestore !== null) {
+          map.options.closePopupOnClick = mapClosePopupOnClickShelterRestore;
+          mapClosePopupOnClickShelterRestore = null;
+        }
         if (shelterPopupCloseResetTimer) clearTimeout(shelterPopupCloseResetTimer);
         shelterPopupCloseResetTimer = setTimeout(function () {
           shelterPopupCloseResetTimer = null;
@@ -2514,26 +2544,37 @@
       return mapExpanded ? 600 : 350;
     }
 
-    function growMapForShelterPopupIfNeeded(popup) {
+    function shelterPopupMaxMapHeightPx() {
+      var h = window.innerHeight;
+      if (window.visualViewport && window.visualViewport.height) {
+        h = Math.min(h, window.visualViewport.offsetTop + window.visualViewport.height);
+      }
+      return Math.min(Math.round(h * 0.94), 1200);
+    }
+
+    function growMapForShelterPopupIfNeeded(popup, attempt) {
       if (!map || !popup) return;
+      attempt = attempt || 0;
+      if (attempt > 28) return;
       var mapEl = document.getElementById('map');
       if (!mapEl) return;
-      var maxH = Math.min(Math.round(window.innerHeight * 0.92), 1200);
-      var pad = 20;
-      for (var i = 0; i < 5; i++) {
-        var el = popup.getElement();
-        if (!el) return;
-        var mapRect = mapEl.getBoundingClientRect();
-        var popupRect = el.getBoundingClientRect();
-        var bottomOver = popupRect.bottom - (mapRect.bottom - pad);
-        if (bottomOver <= 0) break;
-        var next = Math.min(mapEl.offsetHeight + Math.ceil(bottomOver), maxH);
-        if (next <= mapEl.offsetHeight) break;
-        mapEl.style.height = next + 'px';
-        mapGrownForShelterPopup = true;
-        map.invalidateSize();
-        popup.update();
-      }
+      var maxH = shelterPopupMaxMapHeightPx();
+      var pad = 24;
+      var el = popup.getElement();
+      if (!el) return;
+      var mapRect = mapEl.getBoundingClientRect();
+      var popupRect = el.getBoundingClientRect();
+      var bottomOver = popupRect.bottom - (mapRect.bottom - pad);
+      if (bottomOver <= 0) return;
+      var next = Math.min(mapEl.offsetHeight + Math.ceil(bottomOver), maxH);
+      if (next <= mapEl.offsetHeight) return;
+      mapEl.style.height = next + 'px';
+      mapGrownForShelterPopup = true;
+      map.invalidateSize();
+      popup.update();
+      requestAnimationFrame(function () {
+        growMapForShelterPopupIfNeeded(popup, attempt + 1);
+      });
     }
 
     function resetMapHeightAfterShelterPopup() {
@@ -2623,6 +2664,7 @@
           maxWidth: 320,
           minWidth: 260,
           autoPan: true,
+          keepInView: true,
           autoPanPaddingTopLeft: [16, 56],
           autoPanPaddingBottomRight: [16, 72],
         }
@@ -3029,6 +3071,15 @@
     updateOfflineBanner();
     initLivePresence();
     loadShelters();
+  </script>
+  <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+  <script>
+    kofiWidgetOverlay.draw('mdaveid', {
+      'type': 'floating-chat',
+      'floating-chat.donateButton.text': 'תרמו לנו',
+      'floating-chat.donateButton.background-color': '#323842',
+      'floating-chat.donateButton.text-color': '#fff'
+    });
   </script>
 </body>
 </html>

@@ -71,6 +71,8 @@
       errPos: 'לא ניתן לקבוע מיקום כרגע. נסו שוב.',
       errTimeout: 'זמן האיתור פג. נסו שוב.',
       footerMapHtml: 'נתוני מקלטים: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> (CC-BY) + <a href="https://gisn.tel-aviv.gov.il" target="_blank" rel="noopener">עיריית תל אביב-יפו GIS</a> + <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)<br>מפות: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br>',
+      footerBuiltByHtml:
+        'נבנה על ידי <a href="https://www.instagram.com/mdaveid" target="_blank" rel="noopener noreferrer">דוד פדוררו</a>',
       footerDisclaimer: 'אתר זה אינו גוף רשמי ואינו מסונף לפיקוד העורף או לכל גוף ממשלתי.',
       footerTerms: 'תנאי שימוש',
       footerPrivacy: 'מדיניות פרטיות',
@@ -175,6 +177,8 @@
       errPos: 'Location is unavailable right now. Try again.',
       errTimeout: 'Location request timed out. Try again.',
       footerMapHtml: 'Shelter data: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> (CC-BY) + <a href="https://gisn.tel-aviv.gov.il" target="_blank" rel="noopener">Tel Aviv-Yafo Municipality GIS</a> + <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)<br>Maps: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br>',
+      footerBuiltByHtml:
+        'Built by <a href="https://www.instagram.com/mdaveid" target="_blank" rel="noopener noreferrer">David Fedorro</a>',
       footerDisclaimer: 'This site is independent and not affiliated with the Home Front Command or any government body.',
       footerTerms: 'Terms of use',
       footerPrivacy: 'Privacy policy',
@@ -279,6 +283,8 @@
       errPos: 'Сейчас нельзя определить местоположение. Попробуйте снова.',
       errTimeout: 'Время ожидания геолокации истекло. Попробуйте снова.',
       footerMapHtml: 'Данные: <a href="https://www.govmap.gov.il" target="_blank" rel="noopener">GovMap</a> (CC-BY) + <a href="https://gisn.tel-aviv.gov.il" target="_blank" rel="noopener">ГИС Муниципалитета Тель-Авива</a> + <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)<br>Карты: <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> | <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a><br>',
+      footerBuiltByHtml:
+        'Создано <a href="https://www.instagram.com/mdaveid" target="_blank" rel="noopener noreferrer">Давидом Федорро</a>',
       footerDisclaimer: 'Сайт независимый и не связан с командованием тыла или другими государственными органами.',
       footerTerms: 'Условия использования',
       footerPrivacy: 'Конфиденциальность',
